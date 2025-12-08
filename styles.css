@@ -639,6 +639,49 @@ section::before {
     background: rgba(10, 26, 47, 0.5);
 }
 
+.team-search-wrapper {
+    position: relative;
+    margin-bottom: 2rem;
+}
+
+.team-search-input {
+    width: 100%;
+    padding: 15px 50px 15px 20px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 215, 0, 0.2);
+    border-radius: var(--border-radius);
+    color: var(--text-primary);
+    font-family: var(--font-primary);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.team-search-input:focus {
+    outline: none;
+    border-color: var(--newyear-gold);
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.team-search-input::placeholder {
+    color: var(--text-muted);
+}
+
+.search-icon {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.2rem;
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+.team-item.hidden {
+    display: none;
+}
+
 .teams-accordion {
     display: flex;
     flex-direction: column;
