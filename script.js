@@ -159,6 +159,9 @@ function renderTeams() {
     gameData.teams.forEach(team => {
         const teamItem = document.createElement('div');
         teamItem.className = 'team-item';
+        teamItem.dataset.teamName = team.name.toLowerCase();
+        teamItem.dataset.captain = team.captain.toLowerCase();
+        teamItem.dataset.members = team.members.map(m => m.fio.toLowerCase()).join(' ');
         teamItem.innerHTML = `
             <div class="team-header" onclick="toggleTeam(this)">
                 <div class="team-info">
@@ -203,6 +206,35 @@ function renderTeams() {
             </div>
         `;
         accordion.appendChild(teamItem);
+    });
+}
+
+// Фильтрация команд по поисковому запросу
+function filterTeams(searchQuery) {
+    if (!gameData) return;
+    
+    const query = searchQuery.toLowerCase().trim();
+    const teamItems = document.querySelectorAll('.team-item');
+    
+    if (!query) {
+        // Показать все команды, если поиск пустой
+        teamItems.forEach(item => {
+            item.classList.remove('hidden');
+        });
+        return;
+    }
+    
+    teamItems.forEach(item => {
+        const teamName = item.dataset.teamName || '';
+        const captain = item.dataset.captain || '';
+        const members = item.dataset.members || '';
+        
+        // Проверяем совпадение по названию команды, капитану или участникам
+        if (teamName.includes(query) || captain.includes(query) || members.includes(query)) {
+            item.classList.remove('hidden');
+        } else {
+            item.classList.add('hidden');
+        }
     });
 }
 
@@ -376,6 +408,21 @@ function setupEventListeners() {
         });
     }
     
+    // Поиск по командам
+    const teamSearchInput = document.getElementById('teamSearch');
+    if (teamSearchInput) {
+        teamSearchInput.addEventListener('input', (e) => {
+            filterTeams(e.target.value);
+        });
+        
+        // Очистка поиска при Escape
+        teamSearchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                e.target.value = '';
+                filterTeams('');
+            }
+        });
+    }
 }
 
 
