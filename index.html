@@ -172,7 +172,12 @@
                     <p class="empty-state">Пока нет активных челленджей</p>
                 </div>
                 <div class="challenge-form-wrapper">
-                    <button class="btn-primary" id="openChallengeForm">Бросить вызов</button>
+                    <p class="section-description" style="margin-bottom: 1rem; color: var(--text-muted);">
+                        Чтобы бросить вызов другой команде, напишите в наш Telegram-канал
+                    </p>
+                    <a href="https://t.me/+3Za-cNXWrOE0ZGYy" target="_blank" rel="noopener noreferrer" class="btn-primary" style="text-decoration: none; display: inline-block;">
+                        Написать в Telegram
+                    </a>
                 </div>
             </div>
         </div>
@@ -188,7 +193,12 @@
                     <p class="empty-state">Пока нет загруженных фото</p>
                 </div>
                 <div class="photo-form-wrapper">
-                    <button class="btn-primary" id="openPhotoForm">Загрузить фото</button>
+                    <p class="section-description" style="margin-bottom: 1rem; color: var(--text-muted);">
+                        Чтобы загрузить фото команды, напишите в наш Telegram-канал
+                    </p>
+                    <a href="https://t.me/+3Za-cNXWrOE0ZGYy" target="_blank" rel="noopener noreferrer" class="btn-primary" style="text-decoration: none; display: inline-block;">
+                        Написать в Telegram
+                    </a>
                 </div>
             </div>
         </div>
@@ -215,57 +225,6 @@
         </div>
     </footer>
 
-    <!-- Challenge Form Modal -->
-    <div class="modal" id="challengeModal">
-        <div class="modal-content">
-            <span class="modal-close" id="closeChallengeModal">&times;</span>
-            <h3>Бросить вызов</h3>
-            <form id="challengeForm">
-                <div class="form-group">
-                    <label for="challengeFrom">От команды:</label>
-                    <select id="challengeFrom" required>
-                        <option value="">Выберите команду</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="challengeTo">Кому вызов:</label>
-                    <select id="challengeTo" required>
-                        <option value="">Выберите команду</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="challengeDescription">Описание вызова:</label>
-                    <textarea id="challengeDescription" rows="4" required></textarea>
-                </div>
-                <button type="submit" class="btn-primary">Отправить вызов</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Photo Form Modal -->
-    <div class="modal" id="photoModal">
-        <div class="modal-content">
-            <span class="modal-close" id="closePhotoModal">&times;</span>
-            <h3>Загрузить фото</h3>
-            <form id="photoForm">
-                <div class="form-group">
-                    <label for="photoTeam">Команда:</label>
-                    <select id="photoTeam" required>
-                        <option value="">Выберите команду</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="photoDescription">Описание фото:</label>
-                    <textarea id="photoDescription" rows="3" required></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="photoUrl">Ссылка на фото:</label>
-                    <input type="url" id="photoUrl" placeholder="https://..." required>
-                </div>
-                <button type="submit" class="btn-primary">Отправить</button>
-            </form>
-        </div>
-    </div>
 
     <!-- Декоративные элементы -->
     <div class="decorations">
