@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Декабрьская Лига - Чемпионы декабря</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Снежинки фон -->
+    <div class="snowflakes" aria-hidden="true"></div>
+
+    <!-- Header Navigation -->
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <div class="nav-logo">
+                    <span class="logo-text">Декабрьская Лига</span>
+                </div>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="#legend" class="nav-link">Легенда</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#leaderboard" class="nav-link">Турнирная таблица</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#achievements" class="nav-link">Достижения</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#teams" class="nav-link">Команды</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#challenges" class="nav-link">Челленджи</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#photos" class="nav-link">Фото-конкурс</a>
+                    </li>
+                </ul>
+                <div class="nav-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-background"></div>
+        <div class="hero-decoration-elements">
+            <div class="hero-star hero-star-1">⭐</div>
+            <div class="hero-star hero-star-2">🏆</div>
+            <div class="hero-star hero-star-3">✨</div>
+            <div class="hero-star hero-star-4">🌟</div>
+        </div>
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    <span class="title-main">Чемпионы декабря</span>
+                    <span class="title-sub">Декабрьская Лига</span>
+                </h1>
+                <p class="hero-description">
+                    10 команд сражаются за звание Чемпиона декабря. Каждое достижение — это балл. 
+                    Каждая неделя — новый тур. Кто станет победителем?
+                </p>
+                <div class="hero-update">
+                    <span class="update-label">Последнее обновление:</span>
+                    <span class="update-date" id="lastUpdated">—</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Legend Section -->
+    <section class="legend" id="legend">
+        <div class="container">
+            <h2 class="section-title">Игровая легенда</h2>
+            <div class="legend-content">
+                <div class="legend-text">
+                    <p>
+                        10 команд участвуют в <strong>Декабрьской Лиге</strong>. Каждую неделю — <strong>тур</strong>. 
+                        Каждое достижение — <strong>балл</strong>. Команды идут по турнирной таблице, 
+                        сражаясь за звание <strong>Чемпиона декабря</strong>.
+                    </p>
+                    <p>
+                        Каждая команда — это <strong>клуб</strong>, каждый участник — <strong>игрок</strong>, 
+                        а лидерборд — <strong>турнирная таблица</strong>.
+                    </p>
+                    <p>
+                        Еженедельно утром в понедельник данные из Kmarks обновляются для распределения баллов. 
+                        Это не просто соревнование — это миссия по формированию привычки мониторинга данных 
+                        и достижению новых высот!
+                    </p>
+                </div>
+                <div class="legend-visual">
+                    <div class="legend-card">
+                        <div class="legend-icon">🏆</div>
+                        <h3>Чемпион декабря</h3>
+                        <p>Команда с наибольшим количеством баллов</p>
+                    </div>
+                    <div class="legend-card">
+                        <div class="legend-icon">⚔️</div>
+                        <h3>10 клубов</h3>
+                        <p>Сражаются за победу</p>
+                    </div>
+                    <div class="legend-card">
+                        <div class="legend-icon">⭐</div>
+                        <h3>Достижения</h3>
+                        <p>Каждое приносит баллы</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Leaderboard Section -->
+    <section class="leaderboard-section" id="leaderboard">
+        <div class="container">
+            <h2 class="section-title">Турнирная таблица</h2>
+            <div class="leaderboard-controls">
+                <button class="btn-sort active" data-sort="points">По баллам</button>
+                <button class="btn-sort" data-sort="revenue">По выручке</button>
+                <button class="btn-refresh" id="refreshBtn">Обновить данные</button>
+            </div>
+            <div class="leaderboard-table-wrapper">
+                <table class="leaderboard-table" id="leaderboardTable">
+                    <thead>
+                        <tr>
+                            <th>Позиция</th>
+                            <th>Команда</th>
+                            <th>Капитан</th>
+                            <th>Баллы</th>
+                            <th>Выручка</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboardBody">
+                        <!-- Данные загружаются через JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Achievements Section -->
+    <section class="achievements" id="achievements">
+        <div class="container">
+            <h2 class="section-title">Достижения</h2>
+            <div class="achievements-grid" id="achievementsGrid">
+                <!-- Данные загружаются через JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Teams Section -->
+    <section class="teams" id="teams">
+        <div class="container">
+            <h2 class="section-title">Команды</h2>
+            <div class="teams-accordion" id="teamsAccordion">
+                <!-- Данные загружаются через JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Challenges Section -->
+    <section class="challenges" id="challenges">
+        <div class="container">
+            <h2 class="section-title">Челленджи</h2>
+            <div class="challenges-content">
+                <div class="challenges-list" id="challengesList">
+                    <p class="empty-state">Пока нет активных челленджей</p>
+                </div>
+                <div class="challenge-form-wrapper">
+                    <button class="btn-primary" id="openChallengeForm">Бросить вызов</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Photo Contest Section -->
+    <section class="photos" id="photos">
+        <div class="container">
+            <h2 class="section-title">Фото-конкурс</h2>
+            <p class="section-subtitle">Самое креативное фото команды в новогоднем стиле = 1 доп. балл</p>
+            <div class="photos-content">
+                <div class="photos-gallery" id="photosGallery">
+                    <p class="empty-state">Пока нет загруженных фото</p>
+                </div>
+                <div class="photo-form-wrapper">
+                    <button class="btn-primary" id="openPhotoForm">Загрузить фото</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Общая выручка:</span>
+                        <span class="stat-value" id="totalRevenue">90 412 271 ₽</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">До следующего обновления:</span>
+                        <span class="stat-value" id="nextUpdateTimer">—</span>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <p>&copy; 2025 Декабрьская Лига. Все права защищены.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Challenge Form Modal -->
+    <div class="modal" id="challengeModal">
+        <div class="modal-content">
+            <span class="modal-close" id="closeChallengeModal">&times;</span>
+            <h3>Бросить вызов</h3>
+            <form id="challengeForm">
+                <div class="form-group">
+                    <label for="challengeFrom">От команды:</label>
+                    <select id="challengeFrom" required>
+                        <option value="">Выберите команду</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="challengeTo">Кому вызов:</label>
+                    <select id="challengeTo" required>
+                        <option value="">Выберите команду</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="challengeDescription">Описание вызова:</label>
+                    <textarea id="challengeDescription" rows="4" required></textarea>
+                </div>
+                <button type="submit" class="btn-primary">Отправить вызов</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Photo Form Modal -->
+    <div class="modal" id="photoModal">
+        <div class="modal-content">
+            <span class="modal-close" id="closePhotoModal">&times;</span>
+            <h3>Загрузить фото</h3>
+            <form id="photoForm">
+                <div class="form-group">
+                    <label for="photoTeam">Команда:</label>
+                    <select id="photoTeam" required>
+                        <option value="">Выберите команду</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="photoDescription">Описание фото:</label>
+                    <textarea id="photoDescription" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="photoUrl">Ссылка на фото:</label>
+                    <input type="url" id="photoUrl" placeholder="https://..." required>
+                </div>
+                <button type="submit" class="btn-primary">Отправить</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Декоративные элементы -->
+    <div class="decorations">
+        <div class="decoration-star decoration-star-1">⭐</div>
+        <div class="decoration-star decoration-star-2">✨</div>
+        <div class="decoration-star decoration-star-3">🌟</div>
+        <div class="decoration-star decoration-star-4">💫</div>
+        <div class="decoration-star decoration-star-5">⭐</div>
+        <div class="decoration-star decoration-star-6">✨</div>
+        <div class="decoration-glow decoration-glow-1"></div>
+        <div class="decoration-glow decoration-glow-2"></div>
+        <div class="decoration-glow decoration-glow-3"></div>
+        <div class="decoration-particles"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
