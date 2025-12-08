@@ -282,7 +282,7 @@ function updateFooter() {
     
     const totalRevenueEl = document.getElementById('totalRevenue');
     if (totalRevenueEl) {
-        totalRevenueEl.textContent = formatCurrency(gameData.totalRevenue || 90412271);
+        totalRevenueEl.textContent = formatCurrency(gameData.totalRevenue || 0);
     }
 }
 
