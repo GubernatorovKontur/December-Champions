@@ -1,7 +1,7 @@
 {
   "lastUpdated": "2025-12-08",
   "nextUpdate": "2025-12-15T09:00:00",
-  "totalRevenue": 14399184,
+  "totalRevenue": 14397181,
   "achievements": [
     {
       "id": "fast_payment",
@@ -383,7 +383,7 @@
       "id": 5,
       "name": "Клуб 5",
       "captain": "Однораленко Марина Викторовна",
-      "totalRevenue": 1217323,
+      "totalRevenue": 1216303,
       "points": 5,
       "members": [
         {
@@ -706,7 +706,7 @@
       "id": 9,
       "name": "Клуб 9",
       "captain": "Демидова Олеся Владиславовна",
-      "totalRevenue": 1101666,
+      "totalRevenue": 1101566,
       "points": 3,
       "members": [
         {
