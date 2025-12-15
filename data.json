@@ -1,7 +1,7 @@
 {
   "lastUpdated": "2025-12-08",
   "nextUpdate": "2025-12-15T09:00:00",
-  "totalRevenue": 14397181,
+  "totalRevenue": 14769468,
   "achievements": [
     {
       "id": "fast_payment",
@@ -39,7 +39,7 @@
       "id": 1,
       "name": "Клуб 1",
       "captain": "Блохина Ляйсан Данировна",
-      "totalRevenue": 1635032,
+      "totalRevenue": 1731022,
       "points": 11,
       "members": [
         {
@@ -125,7 +125,7 @@
       "id": 2,
       "name": "Клуб 2",
       "captain": "Паршуков Иван Александрович",
-      "totalRevenue": 1221271,
+      "totalRevenue": 1186271,
       "points": 5,
       "members": [
         {
@@ -211,7 +211,7 @@
       "id": 3,
       "name": "Клуб 3",
       "captain": "Порхоменко Ирина Анатольевна",
-      "totalRevenue": 2105186,
+      "totalRevenue": 2046795,
       "points": 4,
       "members": [
         {
@@ -297,7 +297,7 @@
       "id": 4,
       "name": "Клуб 4",
       "captain": "Кириченко Сергей Александрович",
-      "totalRevenue": 2003947,
+      "totalRevenue": 1984947,
       "points": 16,
       "members": [
         {
@@ -462,7 +462,7 @@
       "id": 6,
       "name": "Клуб 6",
       "captain": "Юрчик Роман Сергеевич",
-      "totalRevenue": 1352927,
+      "totalRevenue": 1365926,
       "points": 11,
       "members": [
         {
@@ -548,7 +548,7 @@
       "id": 7,
       "name": "Клуб 7",
       "captain": "Шумилина Наталья Алексеевна",
-      "totalRevenue": 1852065,
+      "totalRevenue": 1843065,
       "points": 10,
       "members": [
         {
@@ -706,7 +706,7 @@
       "id": 9,
       "name": "Клуб 9",
       "captain": "Демидова Олеся Владиславовна",
-      "totalRevenue": 1101566,
+      "totalRevenue": 1085566,
       "points": 3,
       "members": [
         {
@@ -785,7 +785,7 @@
       "id": 10,
       "name": "Клуб 10",
       "captain": "Краюшкина Анна Константиновна",
-      "totalRevenue": 813990,
+      "totalRevenue": 813790,
       "points": 0,
       "members": [
         {
