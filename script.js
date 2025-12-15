@@ -58,31 +58,14 @@ async function loadData() {
 function calculatePoints() {
     if (!gameData || !gameData.teams) return;
     
-    // Находим команду с максимальной выручкой для "Топ-выручка"
-    const maxRevenue = Math.max(...gameData.teams.map(team => team.totalRevenue));
-    
     gameData.teams.forEach(team => {
+        // Суммируем баллы всех участников команды
         let points = 0;
-        
-        // Топ-выручка (5 баллов)
-        if (team.totalRevenue === maxRevenue && maxRevenue > 0) {
-            points += 5;
-        }
-        
-        // Проверка других достижений на основе данных участников
-        // Примечание: для полной реализации нужны дополнительные данные о транзакциях
-        // Здесь реализована базовая логика
-        
-        // Супер счёт (2 балла) - проверяем участников с выручкой >= 100000
         team.members.forEach(member => {
-            if (member.revenue >= 100000) {
-                points += 2;
+            if (member.points) {
+                points += member.points;
             }
         });
-        
-        // Быстрый дожим (1 балл) - нужны данные о датах оплаты
-        // Супер лид (3 балла) - нужны данные о лидах
-        // Кросс-продажа (2 балла) - нужны данные о клиентах и продуктах
         
         team.points = points;
     });
