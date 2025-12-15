@@ -172,6 +172,7 @@ function renderTeams() {
                             <th>ФИО</th>
                             <th>Продукт</th>
                             <th>Выручка</th>
+                            <th>Баллы</th>
                             <th>Статус</th>
                         </tr>
                     </thead>
@@ -181,6 +182,7 @@ function renderTeams() {
                                 <td class="${member.status === 'капитан' ? 'member-captain' : ''}">${member.fio}</td>
                                 <td>${member.product}</td>
                                 <td>${formatCurrency(member.revenue)}</td>
+                                <td><strong>${member.points || 0}</strong></td>
                                 <td>${member.status === 'капитан' ? '⭐ Капитан' : 'Игрок'}</td>
                             </tr>
                         `).join('')}
