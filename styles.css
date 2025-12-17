@@ -899,6 +899,15 @@ section::before {
 }
 
 .photo-image {
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.photo-image:hover {
+    transform: scale(1.05);
+}
+
+.photo-image {
     width: 100%;
     height: 200px;
     object-fit: cover;
@@ -1383,6 +1392,46 @@ section::before {
 .modal-close:hover {
     color: var(--newyear-gold);
     transform: rotate(90deg);
+}
+
+/* Photo Modal Styles */
+.photo-modal-content {
+    max-width: 90vw;
+    max-height: 90vh;
+    width: auto;
+    padding: 0;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+}
+
+.modal-photo-image {
+    max-width: 100%;
+    max-height: 80vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border-radius: var(--border-radius);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.modal-photo-info {
+    margin-top: 1.5rem;
+    text-align: center;
+    padding: 0 2rem 2rem;
+}
+
+.modal-photo-team {
+    font-size: 1.5rem;
+    font-weight: var(--font-weight-regular);
+    color: var(--newyear-gold);
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+}
+
+.modal-photo-description {
+    font-size: 1rem;
+    color: var(--text-secondary);
 }
 
 .form-group {
