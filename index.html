@@ -250,6 +250,18 @@
         <div class="decoration-particles"></div>
     </div>
 
+    <!-- Photo Modal -->
+    <div id="photoModal" class="modal" onclick="if(event.target === this) closePhotoModal()">
+        <div class="modal-content photo-modal-content">
+            <span class="modal-close" onclick="closePhotoModal()">&times;</span>
+            <img id="modalPhotoImage" src="" alt="Фото команды" class="modal-photo-image">
+            <div class="modal-photo-info">
+                <div id="modalPhotoTeam" class="modal-photo-team"></div>
+                <div id="modalPhotoDescription" class="modal-photo-description"></div>
+            </div>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 
     <!-- Yandex.Metrika counter -->
