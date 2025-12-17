@@ -280,7 +280,7 @@ function renderPhotos() {
             item.className = 'photo-item';
             const team = gameData.teams.find(t => t.id === photo.team);
             item.innerHTML = `
-                <img src="${photo.url}" alt="${photo.description}" class="photo-image" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'250\' height=\'200\'%3E%3Crect fill=\'%23ccc\' width=\'250\' height=\'200\'/%3E%3Ctext fill=\'%23999\' font-family=\'sans-serif\' font-size=\'14\' dy=\'10.5\' font-weight=\'bold\' x=\'50%25\' y=\'50%25\' text-anchor=\'middle\'%3EНет фото%3C/text%3E%3C/svg%3E'">
+                <img src="${photo.url}" alt="${photo.description}" class="photo-image" onclick="openPhotoModal('${photo.url}', '${(team ? team.name : 'Команда ' + photo.team).replace(/'/g, "\\'")}', '${(photo.description || '').replace(/'/g, "\\'")}')" style="cursor: pointer;" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'250\' height=\'200\'%3E%3Crect fill=\'%23ccc\' width=\'250\' height=\'200\'/%3E%3Ctext fill=\'%23999\' font-family=\'sans-serif\' font-size=\'14\' dy=\'10.5\' font-weight=\'bold\' x=\'50%25\' y=\'50%25\' text-anchor=\'middle\'%3EНет фото%3C/text%3E%3C/svg%3E'">
                 <div class="photo-info">
                     <div class="photo-team">${team ? team.name : 'Команда ' + photo.team}</div>
                     <div class="photo-description">${photo.description}</div>
@@ -292,6 +292,38 @@ function renderPhotos() {
         gallery.innerHTML = '<p class="empty-state">Пока нет загруженных фото</p>';
     }
 }
+
+// Открытие модального окна с фото
+function openPhotoModal(imageUrl, teamName, description) {
+    const modal = document.getElementById('photoModal');
+    const modalImg = document.getElementById('modalPhotoImage');
+    const modalTeam = document.getElementById('modalPhotoTeam');
+    const modalDesc = document.getElementById('modalPhotoDescription');
+    
+    if (modal && modalImg) {
+        modalImg.src = imageUrl;
+        if (modalTeam) modalTeam.textContent = teamName;
+        if (modalDesc) modalDesc.textContent = description || '';
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+// Закрытие модального окна
+function closePhotoModal() {
+    const modal = document.getElementById('photoModal');
+    if (modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+}
+
+// Закрытие модального окна по Escape
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        closePhotoModal();
+    }
+});
 
 // Обновление футера
 function updateFooter() {
@@ -414,4 +446,6 @@ function setupEventListeners() {
 
 // Экспорт функции для использования в HTML
 window.toggleTeam = toggleTeam;
+window.openPhotoModal = openPhotoModal;
+window.closePhotoModal = closePhotoModal;
 
