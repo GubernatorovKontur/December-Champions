@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2025-12-15",
-  "nextUpdate": "2025-12-15T09:00:00",
-  "totalRevenue": 14769468,
+  "lastUpdated": "2025-12-22",
+  "nextUpdate": "2025-12-29T09:00:00",
+  "totalRevenue": 22484771,
   "achievements": [
     {
       "id": "fast_payment",
@@ -39,27 +39,27 @@
       "id": 1,
       "name": "Just For Fun",
       "captain": "Блохина Ляйсан Данировна",
-      "totalRevenue": 1731022,
-      "points": 11,
+      "totalRevenue": 2511582,
+      "points": 16,
       "members": [
         {
           "fio": "Багров Сергей Александрович",
           "product": "Сегмент+",
-          "revenue": 147600,
+          "revenue": 170290,
           "points": 2,
           "status": "игрок"
         },
         {
           "fio": "Блохина Ляйсан Данировна",
           "product": "Экстерн",
-          "revenue": 103182,
+          "revenue": 143242,
           "points": 0,
           "status": "капитан"
         },
         {
           "fio": "Герасимова Дарья Александровна",
           "product": "Недвижимость",
-          "revenue": 286640,
+          "revenue": 312640,
           "points": 1,
           "status": "игрок"
         },
@@ -73,49 +73,49 @@
         {
           "fio": "Карпухина Вера Владимировна",
           "product": "Экстерн",
-          "revenue": 45830,
+          "revenue": 72710,
           "points": 0,
           "status": "игрок"
         },
         {
           "fio": "Кутукова Валерия Вячеславовна",
           "product": "Недвижимость",
-          "revenue": 158050,
+          "revenue": 335050,
           "points": 1,
           "status": "игрок"
         },
         {
           "fio": "Макаренков Данила Сергеевич",
           "product": "Сегмент+",
-          "revenue": 0,
-          "points": 0,
+          "revenue": 222000,
+          "points": 2,
           "status": "игрок"
         },
         {
           "fio": "Паршин Руслан Дмитриевич",
           "product": "Недвижимость",
-          "revenue": 143450,
+          "revenue": 166075,
           "points": 0,
           "status": "игрок"
         },
         {
           "fio": "Селиванов Никита Сергеевич",
           "product": "Недвижимость",
-          "revenue": 57950,
+          "revenue": 105675,
           "points": 0,
           "status": "игрок"
         },
         {
           "fio": "Семин Никита Евгеньевич",
           "product": "Фокус",
-          "revenue": 468110,
-          "points": 5,
+          "revenue": 633550,
+          "points": 8,
           "status": "игрок"
         },
         {
           "fio": "Степанова Мария Эдуардовна",
           "product": "Экстерн",
-          "revenue": 140290,
+          "revenue": 170430,
           "points": 1,
           "status": "игрок"
         }
@@ -125,27 +125,27 @@
       "id": 2,
       "name": "Клуб первых",
       "captain": "Паршуков Иван Александрович",
-      "totalRevenue": 1186271,
-      "points": 5,
+      "totalRevenue": 2083237,
+      "points": 15,
       "members": [
         {
           "fio": "Анопова Юлия Николаевна",
           "product": "КЭП",
-          "revenue": 266053,
+          "revenue": 425308,
           "points": 0,
           "status": "игрок"
         },
         {
           "fio": "Апухтина Ольга Андреевна",
           "product": "Фокус",
-          "revenue": 57000,
-          "points": 0,
+          "revenue": 324600,
+          "points": 5,
           "status": "игрок"
         },
         {
           "fio": "Беленский Евгений Алексеевич",
           "product": "Диадок",
-          "revenue": 82740,
+          "revenue": 85380,
           "points": 0,
           "status": "игрок"
         },
@@ -159,36 +159,36 @@
         {
           "fio": "Гасымзаде Нурлан Ильгар оглы",
           "product": "Экстерн",
-          "revenue": 182266,
+          "revenue": 269816,
           "points": 3,
           "status": "игрок"
         },
         {
           "fio": "Демьянова Валерия Александровна",
           "product": "Фокус",
-          "revenue": 68000,
-          "points": 1,
+          "revenue": 119000,
+          "points": 2,
           "status": "игрок"
         },
         {
           "fio": "Канаева Анна Витальевна",
           "product": "КЭДО",
-          "revenue": 137922,
-          "points": 1,
+          "revenue": 261463,
+          "points": 4,
           "status": "игрок"
         },
         {
           "fio": "Лисицина Наталья Константиновна",
           "product": "Закупки",
-          "revenue": 152520,
-          "points": 0,
+          "revenue": 262460,
+          "points": 1,
           "status": "игрок"
         },
         {
           "fio": "Паршуков Иван Александрович",
           "product": "Экстерн",
-          "revenue": 203830,
-          "points": 0,
+          "revenue": 292370,
+          "points": 3,
           "status": "капитан"
         },
         {
@@ -201,7 +201,7 @@
         {
           "fio": "Шитов Дмитрий Сергеевич",
           "product": "Диадок",
-          "revenue": 35940,
+          "revenue": 42840,
           "points": 0,
           "status": "игрок"
         }
@@ -211,8 +211,8 @@
       "id": 3,
       "name": "Выходите, бесы",
       "captain": "Порхоменко Ирина Анатольевна",
-      "totalRevenue": 2046795,
-      "points": 4,
+      "totalRevenue": 3170222,
+      "points": 7,
       "members": [
         {
           "fio": "Кикичева Рената Рафаэльевна",
@@ -297,69 +297,69 @@
       "id": 4,
       "name": "Замкнутый круг",
       "captain": "Кириченко Сергей Александрович",
-      "totalRevenue": 1984947,
-      "points": 16,
+      "totalRevenue": 3382435,
+      "points": 19,
       "members": [
         {
           "fio": "Барышева Анна Александровна",
           "product": "НДС+",
-          "revenue": 449938,
+          "revenue": 583088,
           "points": 8,
           "status": "игрок"
         },
         {
           "fio": "Буланов Никита Алексеевич",
           "product": "Фокус",
-          "revenue": 188700,
+          "revenue": 286340,
           "points": 3,
           "status": "игрок"
         },
         {
           "fio": "Галаганов Дмитрий Сергеевич",
           "product": "Сегмент+",
-          "revenue": 0,
-          "points": 0,
+          "revenue": 93600,
+          "points": 1,
           "status": "игрок"
         },
         {
           "fio": "Давыдова Полина Викторовна",
           "product": "Экстерн",
-          "revenue": 222525,
-          "points": 1,
+          "revenue": 345593,
+          "points": 2,
           "status": "игрок"
         },
         {
           "fio": "Дунаев Савелий Дмитриевич",
           "product": "Недвижимость",
-          "revenue": 122600,
+          "revenue": 174850,
           "points": 3,
           "status": "игрок"
         },
         {
           "fio": "Каширина Валерия Андреевна",
           "product": "МСБ",
-          "revenue": 88360,
-          "points": 0,
+          "revenue": 130410,
+          "points": 1,
           "status": "игрок"
         },
         {
           "fio": "Кириченко Сергей Александрович",
           "product": "НДС+",
-          "revenue": 440920,
+          "revenue": 1037655,
           "points": 0,
           "status": "капитан"
         },
         {
           "fio": "Кузнецова Настасья Сергеевна",
           "product": "Диадок",
-          "revenue": 270839,
+          "revenue": 442569,
           "points": 0,
           "status": "игрок"
         },
         {
           "fio": "Мухтаров Дамир Шухратович",
           "product": "Недвижимость",
-          "revenue": 68375,
+          "revenue": 114900,
           "points": 1,
           "status": "игрок"
         },
@@ -373,7 +373,7 @@
         {
           "fio": "Сезёмова Ольга Владимировна",
           "product": "Экстерн",
-          "revenue": 132690,
+          "revenue": 173430,
           "points": 0,
           "status": "игрок"
         }
@@ -383,34 +383,34 @@
       "id": 5,
       "name": "Клуб 5",
       "captain": "Однораленко Марина Викторовна",
-      "totalRevenue": 1216303,
+      "totalRevenue": 1890598,
       "points": 5,
       "members": [
         {
           "fio": "Беляева Елена Игоревна",
           "product": "Экстерн",
-          "revenue": 202415,
+          "revenue": 300445,
           "points": 2,
           "status": "игрок"
         },
         {
           "fio": "Гринько Екатерина Сергеевна",
           "product": "Экстерн",
-          "revenue": 88050,
+          "revenue": 181410,
           "points": 0,
           "status": "игрок"
         },
         {
           "fio": "Дорошенко Сергей Дмитриевич",
           "product": "Недвижимость",
-          "revenue": 208500,
+          "revenue": 283050,
           "points": 0,
           "status": "игрок"
         },
         {
           "fio": "Дрогалова Ангелина Дмитриевна",
           "product": "Диадок",
-          "revenue": 42440,
+          "revenue": 100040,
           "points": 0,
           "status": "игрок"
         },
@@ -424,35 +424,35 @@
         {
           "fio": "Крыжановская Екатерина Алексеевна",
           "product": "Закупки",
-          "revenue": 228285,
+          "revenue": 264765,
           "points": 1,
           "status": "игрок"
         },
         {
           "fio": "Однораленко Марина Викторовна",
           "product": "МСБ",
-          "revenue": 102623,
+          "revenue": 226218,
           "points": 0,
           "status": "капитан"
         },
         {
           "fio": "Пирожкова Алина Евгеньевна",
           "product": "Экстерн",
-          "revenue": 107580,
+          "revenue": 155920,
           "points": 1,
           "status": "игрок"
         },
         {
           "fio": "Стриевская Валерия Георгиевна",
           "product": "Экстерн",
-          "revenue": 5490,
+          "revenue": 93830,
           "points": 0,
           "status": "игрок"
         },
         {
           "fio": "Сугоняева Софья Константиновна",
           "product": "НДС+",
-          "revenue": 230920,
+          "revenue": 284920,
           "points": 1,
           "status": "игрок"
         }
@@ -462,8 +462,8 @@
       "id": 6,
       "name": "Чемпионы Декабря",
       "captain": "Юрчик Роман Сергеевич",
-      "totalRevenue": 1365926,
-      "points": 11,
+      "totalRevenue": 1877367,
+      "points": 14,
       "members": [
         {
           "fio": "Голянина Алина Дамировна",
@@ -475,8 +475,8 @@
         {
           "fio": "Исаев Юрий Олегович",
           "product": "Экстерн",
-          "revenue": 157157,
-          "points": 0,
+          "revenue": 285457,
+          "points": 1,
           "status": "игрок"
         },
         {
@@ -489,35 +489,35 @@
         {
           "fio": "Кущ Кристина Николаевна",
           "product": "Диадок",
-          "revenue": 26440,
+          "revenue": 33340,
           "points": 0,
           "status": "игрок"
         },
         {
           "fio": "Маслова Виктория Романовна",
           "product": "Диадок",
-          "revenue": 68800,
+          "revenue": 71440,
           "points": 0,
           "status": "игрок"
         },
         {
           "fio": "Павловский Кирилл Андреевич",
           "product": "Толк",
-          "revenue": 1390,
+          "revenue": 125061,
           "points": 0,
           "status": "игрок"
         },
         {
           "fio": "Райво Мария Викторовна",
           "product": "НИПы",
-          "revenue": 40023,
+          "revenue": 44023,
           "points": 0,
           "status": "игрок"
         },
         {
           "fio": "Тимохина Александра Михайловна",
           "product": "НДС+",
-          "revenue": 39150,
+          "revenue": 89100,
           "points": 0,
           "status": "игрок"
         },
@@ -538,8 +538,8 @@
         {
           "fio": "Юрчик Роман Сергеевич",
           "product": "Фокус",
-          "revenue": 937387,
-          "points": 11,
+          "revenue": 1133367,
+          "points": 13,
           "status": "капитан"
         }
       ]
@@ -548,8 +548,8 @@
       "id": 7,
       "name": "Mafia продаж",
       "captain": "Шумилина Наталья Алексеевна",
-      "totalRevenue": 1843065,
-      "points": 10,
+      "totalRevenue": 2345352,
+      "points": 11,
       "members": [
         {
           "fio": "Андреев Юрий Александрович",
@@ -561,14 +561,14 @@
         {
           "fio": "Бузова Юлия Константиновна",
           "product": "Экстерн",
-          "revenue": 118060,
+          "revenue": 185827,
           "points": 1,
           "status": "игрок"
         },
         {
           "fio": "Евтеев Игорь Игоревич",
           "product": "Толк",
-          "revenue": 676360,
+          "revenue": 740660,
           "points": 4,
           "status": "игрок"
         },
@@ -589,35 +589,35 @@
         {
           "fio": "Суворова Владислава Вячеславовна",
           "product": "Фокус",
-          "revenue": 18000,
-          "points": 0,
+          "revenue": 155050,
+          "points": 1,
           "status": "игрок"
         },
         {
           "fio": "Утробина Анастасия Вячеславовна",
           "product": "КЭДО",
-          "revenue": 0,
+          "revenue": -16300,
           "points": 0,
           "status": "игрок"
         },
         {
           "fio": "Федюшкина Алиса Игоревна",
           "product": "Экстерн",
-          "revenue": 255870,
+          "revenue": 415160,
           "points": 0,
           "status": "игрок"
         },
         {
           "fio": "Шмакова Катерина Андреевна",
           "product": "Диадок",
-          "revenue": 25250,
+          "revenue": 34030,
           "points": 0,
           "status": "игрок"
         },
         {
           "fio": "Шумилина Наталья Алексеевна",
           "product": "Экстерн",
-          "revenue": 533445,
+          "revenue": 614845,
           "points": 3,
           "status": "капитан"
         }
@@ -627,8 +627,8 @@
       "id": 8,
       "name": "Клуб 8",
       "captain": "Мосина Светлана Евгеньевна",
-      "totalRevenue": 1495782,
-      "points": 16,
+      "totalRevenue": 2301607,
+      "points": 21,
       "members": [
         {
           "fio": "Абрамова Анна Олеговна",
@@ -640,22 +640,22 @@
         {
           "fio": "Багдасарян Оксана Вилевна",
           "product": "Экстерн",
-          "revenue": 132720,
+          "revenue": 199450,
           "points": 0,
           "status": "игрок"
         },
         {
           "fio": "Васильев Антон Геннадьевич",
           "product": "Экстерн",
-          "revenue": 322966,
+          "revenue": 447081,
           "points": 4,
           "status": "игрок"
         },
         {
           "fio": "Дугин Андрей Сергеевич",
           "product": "Фокус",
-          "revenue": 96000,
-          "points": 2,
+          "revenue": 181000,
+          "points": 3,
           "status": "игрок"
         },
         {
@@ -668,8 +668,8 @@
         {
           "fio": "Кузнецова Татьяна Петровна",
           "product": "Фокус",
-          "revenue": 209520,
-          "points": 4,
+          "revenue": 419320,
+          "points": 5,
           "status": "игрок"
         },
         {
@@ -682,21 +682,21 @@
         {
           "fio": "Мосина Светлана Евгеньевна",
           "product": "Диадок",
-          "revenue": 610030,
-          "points": 6,
+          "revenue": 747350,
+          "points": 7,
           "status": "капитан"
         },
         {
           "fio": "Парфенов Никита Тимурович",
           "product": "КЭДО",
-          "revenue": 0,
-          "points": 0,
+          "revenue": 108324,
+          "points": 2,
           "status": "игрок"
         },
         {
           "fio": "Трофимова Анастасия Михайловна",
           "product": "Экстерн",
-          "revenue": 88400,
+          "revenue": 162936,
           "points": 0,
           "status": "игрок"
         }
@@ -706,27 +706,27 @@
       "id": 9,
       "name": "Дожим до курантов",
       "captain": "Демидова Олеся Владиславовна",
-      "totalRevenue": 1085566,
-      "points": 3,
+      "totalRevenue": 1574489,
+      "points": 4,
       "members": [
         {
           "fio": "Бадзиев Астен Владимирович",
           "product": "Толк",
-          "revenue": 68125,
+          "revenue": 107196,
           "points": 0,
           "status": "игрок"
         },
         {
           "fio": "Демидова Олеся Владиславовна",
           "product": "Диадок",
-          "revenue": 120096,
+          "revenue": 126736,
           "points": 1,
           "status": "капитан"
         },
         {
           "fio": "Костюченко Екатерина Александровна",
           "product": "КЭДО",
-          "revenue": 407802,
+          "revenue": 519786,
           "points": 2,
           "status": "игрок"
         },
@@ -747,7 +747,7 @@
         {
           "fio": "Нефёдычев Вячеслав Ильич",
           "product": "Экстерн",
-          "revenue": 11600,
+          "revenue": 86290,
           "points": 0,
           "status": "игрок"
         },
@@ -761,7 +761,7 @@
         {
           "fio": "Серова Наталья Петровна",
           "product": "Экстерн",
-          "revenue": 397051,
+          "revenue": 603098,
           "points": 0,
           "status": "игрок"
         },
@@ -775,8 +775,8 @@
         {
           "fio": "Церетели Валерия Григорьевна",
           "product": "КЭДО",
-          "revenue": 32552,
-          "points": 0,
+          "revenue": 83043,
+          "points": 1,
           "status": "игрок"
         }
       ]
@@ -785,20 +785,20 @@
       "id": 10,
       "name": "Крутые бобры",
       "captain": "Корнеева Анна Александровна",
-      "totalRevenue": 813790,
+      "totalRevenue": 1347882,
       "points": 0,
       "members": [
         {
           "fio": "Бармина Анжелика Дмитриевна",
           "product": "Диадок",
-          "revenue": 10900,
+          "revenue": 50680,
           "points": 0,
           "status": "игрок"
         },
         {
           "fio": "Голинная Ирина Юрьевна",
           "product": "Экстерн",
-          "revenue": 99900,
+          "revenue": 144860,
           "points": 0,
           "status": "игрок"
         },
@@ -812,42 +812,42 @@
         {
           "fio": "Долбилина Вера Сергеевна",
           "product": "Экстерн",
-          "revenue": 77880,
+          "revenue": 123250,
           "points": 0,
           "status": "игрок"
         },
         {
           "fio": "Корнеева Анна Александровна",
           "product": "Экстерн",
-          "revenue": 114780,
+          "revenue": 187710,
           "points": 0,
           "status": "капитан"
         },
         {
           "fio": "Краюшкина Анна Константиновна",
           "product": "НИПы",
-          "revenue": 21200,
+          "revenue": 33690,
           "points": 0,
           "status": "игрок"
         },
         {
           "fio": "Слизская Арина Сергеевна",
           "product": "НДС+",
-          "revenue": 129210,
+          "revenue": 229645,
           "points": 0,
           "status": "игрок"
         },
         {
           "fio": "Суворов Даниил Андреевич",
           "product": "Экстерн",
-          "revenue": 110985,
+          "revenue": 155865,
           "points": 0,
           "status": "игрок"
         },
         {
           "fio": "Чепракова Ольга Сергеевна",
           "product": "НДС+",
-          "revenue": 155770,
+          "revenue": 329017,
           "points": 0,
           "status": "игрок"
         },
@@ -877,6 +877,16 @@
       "team": 10,
       "url": "image/bobr.jpg",
       "description": "Команда Крутые бобры"
+    },
+    {
+      "team": 7,
+      "url": "image/mafia.jpg",
+      "description": "Команда Mafia продаж"
+    },
+    {
+      "team": 2,
+      "url": "image/club1.jpg",
+      "description": "Команда Клуб первых"
     }
   ]
 }
