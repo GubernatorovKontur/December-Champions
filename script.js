@@ -41,6 +41,7 @@ async function loadData() {
         renderTeams();
         renderChallenges();
         renderPhotos();
+        renderResults();
         updateFooter();
         
         // Обновление даты последнего обновления
@@ -54,23 +55,11 @@ async function loadData() {
     }
 }
 
-// Расчет баллов на основе достижений
+// Сортировка команд (баллы уже есть в data.json, не пересчитываем)
 function calculatePoints() {
     if (!gameData || !gameData.teams) return;
     
-    gameData.teams.forEach(team => {
-        // Суммируем баллы всех участников команды
-        let points = 0;
-        team.members.forEach(member => {
-            if (member.points) {
-                points += member.points;
-            }
-        });
-        
-        team.points = points;
-    });
-    
-    // Сортировка команд по баллам
+    // Сортировка команд по баллам или выручке
     gameData.teams.sort((a, b) => {
         if (currentSort === 'points') {
             return b.points - a.points;
@@ -443,6 +432,208 @@ function setupEventListeners() {
 }
 
 
+
+// Рендеринг итогов соревнования
+function renderResults() {
+    if (!gameData || !gameData.teams) return;
+    
+    // Сортируем команды по баллам, при равенстве - по выручке
+    const sortedTeams = [...gameData.teams].sort((a, b) => {
+        if (b.points !== a.points) {
+            return b.points - a.points;
+        }
+        return b.totalRevenue - a.totalRevenue;
+    });
+    
+    // Определяем места с учетом одинаковых баллов
+    const teamsWithPlaces = [];
+    let currentPlace = 1;
+    let currentPoints = sortedTeams[0]?.points;
+    
+    sortedTeams.forEach((team, index) => {
+        if (team.points !== currentPoints) {
+            currentPlace = index + 1;
+            currentPoints = team.points;
+        }
+        teamsWithPlaces.push({
+            ...team,
+            place: currentPlace,
+            points: team.points
+        });
+    });
+    
+    // Победитель (1 место)
+    const winner = teamsWithPlaces.find(t => t.place === 1);
+    if (winner) {
+        const winnerNameEl = document.getElementById('winnerName');
+        const winnerCaptainEl = document.getElementById('winnerCaptain');
+        const winnerPointsEl = document.getElementById('winnerPoints');
+        const winnerRevenueEl = document.getElementById('winnerRevenue');
+        
+        if (winnerNameEl) winnerNameEl.textContent = winner.name;
+        if (winnerCaptainEl) winnerCaptainEl.textContent = `Капитан: ${winner.captain}`;
+        if (winnerPointsEl) winnerPointsEl.textContent = winner.points;
+        if (winnerRevenueEl) winnerRevenueEl.textContent = formatCurrency(winner.totalRevenue);
+    }
+    
+    // Пьедестал (топ-3 места)
+    const podiumEl = document.getElementById('podium');
+    if (podiumEl) {
+        podiumEl.innerHTML = '';
+        
+        // Получаем команды для пьедестала (1, 2, 3 места)
+        const firstPlace = teamsWithPlaces.filter(t => t.place === 1);
+        const secondPlace = teamsWithPlaces.filter(t => t.place === 2);
+        const thirdPlace = teamsWithPlaces.filter(t => t.place === 3);
+        
+        const podiumData = [];
+        
+        // Если есть 2 место, добавляем его слева
+        if (secondPlace.length > 0) {
+            secondPlace.forEach((team, index) => {
+                podiumData.push({
+                    team: team,
+                    place: 'second',
+                    label: '2'
+                });
+            });
+        }
+        
+        // 1 место в центре
+        if (firstPlace.length > 0) {
+            firstPlace.forEach((team, index) => {
+                podiumData.push({
+                    team: team,
+                    place: 'first',
+                    label: '1'
+                });
+            });
+        }
+        
+        // 3 место справа
+        if (thirdPlace.length > 0) {
+            thirdPlace.forEach((team, index) => {
+                podiumData.push({
+                    team: team,
+                    place: 'third',
+                    label: '3'
+                });
+            });
+        }
+        
+        // Если есть несколько команд на 2 месте, показываем их рядом
+        // Порядок: 2 место(и) слева, 1 место в центре, 3 место справа
+        const reorderedPodium = [];
+        
+        // Добавляем все 2 места
+        secondPlace.forEach(team => {
+            reorderedPodium.push({ team, place: 'second', label: '2' });
+        });
+        
+        // Добавляем 1 место
+        firstPlace.forEach(team => {
+            reorderedPodium.push({ team, place: 'first', label: '1' });
+        });
+        
+        // Добавляем 3 место
+        thirdPlace.forEach(team => {
+            reorderedPodium.push({ team, place: 'third', label: '3' });
+        });
+        
+        reorderedPodium.forEach(({ team, place, label }) => {
+            if (!team) return;
+            
+            const item = document.createElement('div');
+            item.className = 'podium-item';
+            item.innerHTML = `
+                <div class="podium-place ${place}">${label}</div>
+                <div class="podium-card ${place}">
+                    <div class="podium-team-name">${team.name}</div>
+                    <div class="podium-captain">${team.captain}</div>
+                    <div class="podium-stats">
+                        <div class="podium-stat">
+                            <span class="podium-stat-label">Баллы:</span>
+                            <span class="podium-stat-value">${team.points}</span>
+                        </div>
+                        <div class="podium-stat">
+                            <span class="podium-stat-label">Выручка:</span>
+                            <span class="podium-stat-value">${formatCurrency(team.totalRevenue)}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            podiumEl.appendChild(item);
+        });
+    }
+    
+    // Общая статистика
+    const statsGridEl = document.getElementById('statsGrid');
+    if (statsGridEl) {
+        const totalTeams = gameData.teams.length;
+        const totalMembers = gameData.teams.reduce((sum, team) => sum + team.members.length, 0);
+        const totalPoints = gameData.teams.reduce((sum, team) => sum + team.points, 0);
+        const avgRevenue = Math.round(gameData.totalRevenue / totalTeams);
+        const avgPoints = Math.round(totalPoints / totalTeams);
+        
+        statsGridEl.innerHTML = `
+            <div class="stat-card">
+                <div class="stat-card-icon">👥</div>
+                <div class="stat-card-label">Команд</div>
+                <div class="stat-card-value">${totalTeams}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-icon">🎯</div>
+                <div class="stat-card-label">Участников</div>
+                <div class="stat-card-value">${totalMembers}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-icon">💰</div>
+                <div class="stat-card-label">Общая выручка</div>
+                <div class="stat-card-value">${formatCurrency(gameData.totalRevenue)}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-icon">⭐</div>
+                <div class="stat-card-label">Всего баллов</div>
+                <div class="stat-card-value">${totalPoints}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-icon">📊</div>
+                <div class="stat-card-label">Средняя выручка</div>
+                <div class="stat-card-value">${formatCurrency(avgRevenue)}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-icon">🏅</div>
+                <div class="stat-card-label">Средние баллы</div>
+                <div class="stat-card-value">${avgPoints}</div>
+            </div>
+        `;
+    }
+    
+    // Создание конфетти
+    createConfetti();
+}
+
+// Создание конфетти
+function createConfetti() {
+    const container = document.getElementById('confettiContainer');
+    if (!container) return;
+    
+    // Очищаем предыдущее конфетти
+    container.innerHTML = '';
+    
+    // Создаем 50 конфетти
+    for (let i = 0; i < 50; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = Math.random() * 100 + '%';
+        confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+        confetti.style.animationDelay = Math.random() * 2 + 's';
+        confetti.style.width = (Math.random() * 10 + 5) + 'px';
+        confetti.style.height = (Math.random() * 10 + 5) + 'px';
+        confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+        container.appendChild(confetti);
+    }
+}
 
 // Экспорт функции для использования в HTML
 window.toggleTeam = toggleTeam;
