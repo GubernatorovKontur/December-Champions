@@ -1,2059 +1,642 @@
-/* Font Face Declarations */
-@font-face {
-    font-family: 'Bounded';
-    src: url('Bounded-Regular.ttf') format('truetype');
-    font-weight: 400;
-    font-style: normal;
-    font-display: swap;
-}
+// Глобальные переменные
+let gameData = null;
+let currentSort = 'points';
 
-@font-face {
-    font-family: 'Bounded';
-    src: url('Bounded-ExtraLight.ttf') format('truetype');
-    font-weight: 200;
-    font-style: normal;
-    font-display: swap;
-}
+// Инициализация при загрузке страницы
+document.addEventListener('DOMContentLoaded', () => {
+    loadData();
+    setupEventListeners();
+    createSnowflakes();
+});
 
-@font-face {
-    font-family: 'Bounded';
-    src: url('Bounded-Black.ttf') format('truetype');
-    font-weight: 900;
-    font-style: normal;
-    font-display: swap;
-}
-
-/* Reset and Base Styles */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
-}
-
-:root {
-    /* Новогодние цвета */
-    --newyear-red: #DC143C;
-    --newyear-gold: #FFD700;
-    --newyear-green: #228B22;
-    --newyear-white: #FFFFFF;
-    --newyear-silver: #C0C0C0;
+// Создание снежинок
+function createSnowflakes() {
+    const snowflakesContainer = document.querySelector('.snowflakes');
+    const snowflakeSymbols = ['❄', '❅', '❆'];
     
-    /* Темные тона из Арктики */
-    --deep-blue: #0A1A2F;
-    --ice-blue: #1A2B4A;
-    --arctic-blue: #2A4B6A;
-    --snow-white: #F8F9FA;
+    for (let i = 0; i < 50; i++) {
+        const snowflake = document.createElement('div');
+        snowflake.className = 'snowflake';
+        snowflake.textContent = snowflakeSymbols[Math.floor(Math.random() * snowflakeSymbols.length)];
+        snowflake.style.left = Math.random() * 100 + '%';
+        snowflake.style.animationDuration = (Math.random() * 3 + 7) + 's';
+        snowflake.style.animationDelay = Math.random() * 5 + 's';
+        snowflake.style.opacity = Math.random() * 0.5 + 0.3;
+        snowflakesContainer.appendChild(snowflake);
+    }
+}
+
+// Загрузка данных из JSON
+async function loadData() {
+    try {
+        const response = await fetch('data.json');
+        gameData = await response.json();
+        
+        // Расчет баллов для всех команд
+        calculatePoints();
+        
+        // Рендеринг всех секций
+        renderLeaderboard();
+        renderAchievements();
+        renderTeams();
+        renderChallenges();
+        renderPhotos();
+        renderResults();
+        updateFooter();
+        
+        // Обновление даты последнего обновления
+        updateLastUpdated();
+        
+        // Запуск таймера
+        startUpdateTimer();
+    } catch (error) {
+        console.error('Ошибка загрузки данных:', error);
+        alert('Не удалось загрузить данные. Пожалуйста, обновите страницу.');
+    }
+}
+
+// Сортировка команд (баллы уже есть в data.json, не пересчитываем)
+function calculatePoints() {
+    if (!gameData || !gameData.teams) return;
     
-    /* Биолюминесцентные акценты из Аватара */
-    --glow-green: #00ff88;
-    --glow-blue: #00aaff;
-    --glow-purple: #aa00ff;
-    --glow-cyan: #00ffff;
+    // Сортировка команд по баллам или выручке
+    gameData.teams.sort((a, b) => {
+        if (currentSort === 'points') {
+            return b.points - a.points;
+        } else {
+            return b.totalRevenue - a.totalRevenue;
+        }
+    });
+}
+
+// Рендеринг турнирной таблицы
+function renderLeaderboard() {
+    const tbody = document.getElementById('leaderboardBody');
+    if (!tbody || !gameData) return;
     
-    /* Текстовые цвета */
-    --text-primary: #F8F9FA;
-    --text-secondary: #B8C5D1;
-    --text-muted: #7A8B9A;
+    tbody.innerHTML = '';
     
-    /* Typography */
-    --font-primary: 'Bounded', sans-serif;
-    --font-weight-light: 200;
-    --font-weight-regular: 400;
-    --font-weight-black: 900;
+    gameData.teams.forEach((team, index) => {
+        const row = document.createElement('tr');
+        
+        // Добавляем классы для топ-3
+        if (index === 0) row.classList.add('top-1');
+        else if (index === 1) row.classList.add('top-2');
+        else if (index === 2) row.classList.add('top-3');
+        
+        const positionClass = index === 0 ? 'top-1' : index === 1 ? 'top-2' : index === 2 ? 'top-3' : '';
+        
+        row.innerHTML = `
+            <td>
+                <span class="position-badge ${positionClass}">${index + 1}</span>
+            </td>
+            <td><strong>${team.name}</strong></td>
+            <td>${team.captain}</td>
+            <td><strong class="points-value">${team.points}</strong></td>
+            <td>${formatCurrency(team.totalRevenue)}</td>
+        `;
+        
+        tbody.appendChild(row);
+    });
+}
+
+// Рендеринг достижений
+function renderAchievements() {
+    const grid = document.getElementById('achievementsGrid');
+    if (!grid || !gameData) return;
     
-    /* Spacing */
-    --section-padding: 80px 0;
-    --container-padding: 0 20px;
-    --border-radius: 12px;
-    --border-radius-lg: 20px;
+    grid.innerHTML = '';
     
-    /* Shadows */
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-    --shadow-glow: 0 0 30px rgba(255, 215, 0, 0.3);
-    --shadow-glow-green: 0 0 30px rgba(0, 255, 136, 0.3);
+    gameData.achievements.forEach(achievement => {
+        const card = document.createElement('div');
+        card.className = 'achievement-card';
+        card.innerHTML = `
+            <div class="achievement-header">
+                <h3 class="achievement-name">${achievement.name}</h3>
+                <div class="achievement-points">${achievement.points}</div>
+            </div>
+            <p class="achievement-description">${achievement.description}</p>
+        `;
+        grid.appendChild(card);
+    });
 }
 
-body {
-    font-family: var(--font-primary);
-    background: linear-gradient(135deg, var(--deep-blue) 0%, var(--ice-blue) 50%, var(--deep-blue) 100%);
-    background-size: 400% 400%;
-    animation: aurora 15s ease-in-out infinite;
-    color: var(--text-primary);
-    line-height: 1.6;
-    overflow-x: hidden;
-    position: relative;
+// Рендеринг команд с аккордеоном
+function renderTeams() {
+    const accordion = document.getElementById('teamsAccordion');
+    if (!accordion || !gameData) return;
+    
+    accordion.innerHTML = '';
+    
+    gameData.teams.forEach(team => {
+        const teamItem = document.createElement('div');
+        teamItem.className = 'team-item';
+        teamItem.dataset.teamName = team.name.toLowerCase();
+        teamItem.dataset.captain = team.captain.toLowerCase();
+        teamItem.dataset.members = team.members.map(m => m.fio.toLowerCase()).join(' ');
+        teamItem.innerHTML = `
+            <div class="team-header" onclick="toggleTeam(this)">
+                <div class="team-info">
+                    <div>
+                        <div class="team-name">${team.name}</div>
+                        <div class="team-captain">Капитан: ${team.captain}</div>
+                    </div>
+                </div>
+                <div class="team-stats">
+                    <div class="team-stat">
+                        <div class="team-stat-label">Баллы</div>
+                        <div class="team-stat-value">${team.points}</div>
+                    </div>
+                    <div class="team-stat">
+                        <div class="team-stat-label">Выручка</div>
+                        <div class="team-stat-value">${formatCurrency(team.totalRevenue)}</div>
+                    </div>
+                </div>
+                <span class="team-toggle">▼</span>
+            </div>
+            <div class="team-members">
+                <table class="members-table">
+                    <thead>
+                        <tr>
+                            <th>ФИО</th>
+                            <th>Продукт</th>
+                            <th>Выручка</th>
+                            <th>Баллы</th>
+                            <th>Статус</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${team.members.map(member => `
+                            <tr>
+                                <td class="${member.status === 'капитан' ? 'member-captain' : ''}">${member.fio}</td>
+                                <td>${member.product}</td>
+                                <td>${formatCurrency(member.revenue)}</td>
+                                <td><strong>${member.points || 0}</strong></td>
+                                <td>${member.status === 'капитан' ? '⭐ Капитан' : 'Игрок'}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+        `;
+        accordion.appendChild(teamItem);
+    });
 }
 
-@keyframes aurora {
-    0%, 100% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-}
-
-/* Snowflakes Animation */
-.snowflakes {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 1;
-    overflow: hidden;
-}
-
-.snowflake {
-    position: absolute;
-    color: var(--snow-white);
-    font-size: 1em;
-    animation: fall linear infinite;
-    opacity: 0.7;
-    user-select: none;
-}
-
-@keyframes fall {
-    0% {
-        transform: translateY(-100vh) rotate(0deg);
-        opacity: 0;
+// Фильтрация команд по поисковому запросу
+function filterTeams(searchQuery) {
+    if (!gameData) return;
+    
+    const query = searchQuery.toLowerCase().trim();
+    const teamItems = document.querySelectorAll('.team-item');
+    
+    if (!query) {
+        // Показать все команды, если поиск пустой
+        teamItems.forEach(item => {
+            item.classList.remove('hidden');
+        });
+        return;
     }
-    10% {
-        opacity: 0.7;
-    }
-    90% {
-        opacity: 0.7;
-    }
-    100% {
-        transform: translateY(100vh) rotate(360deg);
-        opacity: 0;
-    }
+    
+    teamItems.forEach(item => {
+        const teamName = item.dataset.teamName || '';
+        const captain = item.dataset.captain || '';
+        const members = item.dataset.members || '';
+        
+        // Проверяем совпадение по названию команды, капитану или участникам
+        if (teamName.includes(query) || captain.includes(query) || members.includes(query)) {
+            item.classList.remove('hidden');
+        } else {
+            item.classList.add('hidden');
+        }
+    });
 }
 
-/* Header Navigation */
-.header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    background: rgba(10, 26, 47, 0.95);
-    backdrop-filter: blur(20px);
-    border-bottom: 2px solid rgba(255, 215, 0, 0.2);
-    z-index: 1000;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+// Переключение аккордеона команды
+function toggleTeam(header) {
+    const teamItem = header.parentElement;
+    const isActive = teamItem.classList.contains('active');
+    
+    // Закрываем все другие команды
+    document.querySelectorAll('.team-item').forEach(item => {
+        if (item !== teamItem) {
+            item.classList.remove('active');
+        }
+    });
+    
+    // Переключаем текущую команду
+    teamItem.classList.toggle('active', !isActive);
 }
 
-.nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 16px 0;
-    position: relative;
-}
-
-.nav-logo .logo-text {
-    font-size: 1.5rem;
-    font-weight: var(--font-weight-black);
-    color: var(--newyear-gold);
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
-}
-
-.nav-menu {
-    display: flex;
-    list-style: none;
-    gap: 32px;
-    align-items: center;
-}
-
-.nav-link {
-    color: var(--text-primary);
-    text-decoration: none;
-    font-weight: var(--font-weight-regular);
-    font-size: 0.9rem;
-    transition: all 0.3s ease;
-    position: relative;
-    padding: 8px 0;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.nav-link::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 0;
-    height: 2px;
-    background: var(--newyear-gold);
-    transition: width 0.3s ease;
-    box-shadow: 0 0 10px var(--newyear-gold);
-}
-
-.nav-link:hover {
-    color: var(--newyear-gold);
-}
-
-.nav-link:hover::after {
-    width: 100%;
-}
-
-.nav-toggle {
-    display: none;
-    flex-direction: column;
-    cursor: pointer;
-    gap: 4px;
-}
-
-.nav-toggle span {
-    width: 25px;
-    height: 3px;
-    background: var(--text-primary);
-    transition: all 0.3s ease;
-    border-radius: 2px;
-}
-
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: var(--container-padding);
-}
-
-/* Hero Section */
-.hero {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    position: relative;
-    padding: var(--section-padding);
-    padding-top: 120px;
-    background: radial-gradient(ellipse at center, rgba(255, 215, 0, 0.1) 0%, transparent 70%);
-    overflow: hidden;
-}
-
-.hero-background {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(circle at 50% 50%, rgba(220, 20, 60, 0.1) 0%, transparent 70%);
-    z-index: -1;
-}
-
-.hero-content {
-    text-align: center;
-    z-index: 2;
-    position: relative;
-}
-
-.hero-title {
-    margin-bottom: 2rem;
-}
-
-.title-main {
-    display: block;
-    font-size: 4rem;
-    font-weight: var(--font-weight-black);
-    color: var(--newyear-gold);
-    text-transform: uppercase;
-    letter-spacing: 4px;
-    margin-bottom: 1rem;
-    text-shadow: 
-        0 0 20px rgba(255, 215, 0, 0.5),
-        0 0 40px rgba(255, 215, 0, 0.3),
-        0 0 60px rgba(255, 215, 0, 0.2);
-    animation: glow 2s ease-in-out infinite alternate;
-}
-
-@keyframes glow {
-    from {
-        text-shadow: 
-            0 0 20px rgba(255, 215, 0, 0.5),
-            0 0 40px rgba(255, 215, 0, 0.3),
-            0 0 60px rgba(255, 215, 0, 0.2);
-    }
-    to {
-        text-shadow: 
-            0 0 30px rgba(255, 215, 0, 0.7),
-            0 0 60px rgba(255, 215, 0, 0.5),
-            0 0 90px rgba(255, 215, 0, 0.3);
+// Рендеринг челленджей
+function renderChallenges() {
+    const list = document.getElementById('challengesList');
+    if (!list || !gameData) return;
+    
+    if (gameData.challenges && gameData.challenges.length > 0) {
+        list.innerHTML = '';
+        gameData.challenges.forEach(challenge => {
+            const item = document.createElement('div');
+            item.className = 'challenge-item';
+            const fromTeam = gameData.teams.find(t => t.id === challenge.from);
+            const toTeam = gameData.teams.find(t => t.id === challenge.to);
+            item.innerHTML = `
+                <div class="challenge-header">
+                    <div class="challenge-teams">
+                        ${fromTeam ? fromTeam.name : 'Команда ' + challenge.from} → 
+                        ${toTeam ? toTeam.name : 'Команда ' + challenge.to}
+                    </div>
+                    <span class="challenge-status ${challenge.status}">${challenge.status}</span>
+                </div>
+                <div class="challenge-description">${challenge.description}</div>
+            `;
+            list.appendChild(item);
+        });
+    } else {
+        list.innerHTML = '<p class="empty-state">Пока нет активных челленджей</p>';
     }
 }
 
-.title-sub {
-    display: block;
-    font-size: 2rem;
-    font-weight: var(--font-weight-light);
-    color: var(--text-primary);
-    letter-spacing: 2px;
-}
-
-.hero-description {
-    font-size: 1.2rem;
-    color: var(--text-secondary);
-    max-width: 800px;
-    margin: 0 auto 2rem;
-    line-height: 1.8;
-}
-
-.hero-update {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    font-size: 0.9rem;
-    color: var(--text-muted);
-}
-
-.update-label {
-    opacity: 0.7;
-}
-
-.update-date {
-    color: var(--newyear-gold);
-    font-weight: var(--font-weight-regular);
-}
-
-/* Section Styles */
-section {
-    position: relative;
-    padding: var(--section-padding);
-    overflow: hidden;
-}
-
-section::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -50%;
-    width: 200%;
-    height: 100%;
-    background: linear-gradient(90deg, 
-        transparent 0%, 
-        rgba(255, 215, 0, 0.03) 25%, 
-        rgba(255, 215, 0, 0.05) 50%, 
-        rgba(255, 215, 0, 0.03) 75%, 
-        transparent 100%);
-    animation: sectionShimmer 8s linear infinite;
-    pointer-events: none;
-    z-index: 0;
-}
-
-@keyframes sectionShimmer {
-    0% {
-        left: -50%;
-    }
-    100% {
-        left: 50%;
+// Рендеринг фото
+function renderPhotos() {
+    const gallery = document.getElementById('photosGallery');
+    if (!gallery || !gameData) return;
+    
+    if (gameData.photos && gameData.photos.length > 0) {
+        gallery.innerHTML = '';
+        gameData.photos.forEach(photo => {
+            const item = document.createElement('div');
+            item.className = 'photo-item';
+            const team = gameData.teams.find(t => t.id === photo.team);
+            item.innerHTML = `
+                <img src="${photo.url}" alt="${photo.description}" class="photo-image" onclick="openPhotoModal('${photo.url}', '${(team ? team.name : 'Команда ' + photo.team).replace(/'/g, "\\'")}', '${(photo.description || '').replace(/'/g, "\\'")}')" style="cursor: pointer;" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'250\' height=\'200\'%3E%3Crect fill=\'%23ccc\' width=\'250\' height=\'200\'/%3E%3Ctext fill=\'%23999\' font-family=\'sans-serif\' font-size=\'14\' dy=\'10.5\' font-weight=\'bold\' x=\'50%25\' y=\'50%25\' text-anchor=\'middle\'%3EНет фото%3C/text%3E%3C/svg%3E'">
+                <div class="photo-info">
+                    <div class="photo-team">${team ? team.name : 'Команда ' + photo.team}</div>
+                    <div class="photo-description">${photo.description}</div>
+                </div>
+            `;
+            gallery.appendChild(item);
+        });
+    } else {
+        gallery.innerHTML = '<p class="empty-state">Пока нет загруженных фото</p>';
     }
 }
 
-.section-title {
-    font-size: 3rem;
-    font-weight: var(--font-weight-black);
-    text-align: center;
-    margin-bottom: 3rem;
-    color: var(--newyear-gold);
-    text-transform: uppercase;
-    letter-spacing: 3px;
-    text-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
-    position: relative;
-    z-index: 1;
-}
-
-.section-subtitle {
-    text-align: center;
-    font-size: 1.1rem;
-    color: var(--text-secondary);
-    margin-bottom: 2rem;
-}
-
-/* Legend Section */
-.legend {
-    background: rgba(26, 43, 74, 0.3);
-}
-
-.legend-content {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 3rem;
-    align-items: center;
-}
-
-.legend-text {
-    font-size: 1.1rem;
-    line-height: 1.8;
-    color: var(--text-secondary);
-}
-
-.legend-text strong {
-    color: var(--newyear-gold);
-    font-weight: var(--font-weight-regular);
-}
-
-.legend-visual {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
-}
-
-.legend-card {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 215, 0, 0.2);
-    border-radius: var(--border-radius);
-    padding: 2rem;
-    text-align: center;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: visible;
-}
-
-.legend-card:hover {
-    transform: translateY(-5px);
-    border-color: var(--newyear-gold);
-    box-shadow: 0 10px 30px rgba(255, 215, 0, 0.2);
-}
-
-.legend-icon {
-    font-size: 3rem;
-    margin-bottom: 1rem;
-}
-
-.legend-card h3 {
-    font-size: 1.2rem;
-    color: var(--newyear-gold);
-    margin-bottom: 0.5rem;
-}
-
-.legend-card p {
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-}
-
-/* Leaderboard Section */
-.leaderboard-section {
-    background: rgba(10, 26, 47, 0.5);
-}
-
-.leaderboard-controls {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    margin-bottom: 2rem;
-    flex-wrap: wrap;
-}
-
-.btn-sort,
-.btn-refresh {
-    padding: 10px 20px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 215, 0, 0.3);
-    color: var(--text-primary);
-    border-radius: var(--border-radius);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-family: var(--font-primary);
-    font-size: 0.9rem;
-    text-transform: uppercase;
-}
-
-.btn-sort:hover,
-.btn-refresh:hover {
-    background: rgba(255, 215, 0, 0.2);
-    border-color: var(--newyear-gold);
-    transform: translateY(-2px);
-}
-
-.btn-sort.active {
-    background: var(--newyear-gold);
-    color: var(--deep-blue);
-    border-color: var(--newyear-gold);
-}
-
-.leaderboard-table-wrapper {
-    overflow-x: auto;
-    border-radius: var(--border-radius);
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 215, 0, 0.2);
-    position: relative;
-}
-
-.leaderboard-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.leaderboard-table thead {
-    background: rgba(255, 215, 0, 0.1);
-}
-
-.leaderboard-table th {
-    padding: 1rem;
-    text-align: left;
-    color: var(--newyear-gold);
-    font-weight: var(--font-weight-regular);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    font-size: 0.75rem;
-}
-
-.leaderboard-table td {
-    padding: 1rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    color: var(--text-primary);
-    font-size: 0.85rem;
-}
-
-.leaderboard-table tbody tr {
-    transition: all 0.3s ease;
-    position: relative;
-}
-
-.leaderboard-table tbody tr:hover {
-    background: rgba(255, 215, 0, 0.05);
-}
-
-.leaderboard-table tbody tr.top-1 {
-    background: linear-gradient(90deg, rgba(255, 215, 0, 0.2) 0%, transparent 100%);
-    border-left: 3px solid var(--newyear-gold);
-}
-
-.leaderboard-table tbody tr.top-2 {
-    background: linear-gradient(90deg, rgba(192, 192, 192, 0.15) 0%, transparent 100%);
-    border-left: 3px solid var(--newyear-silver);
-}
-
-.leaderboard-table tbody tr.top-3 {
-    background: linear-gradient(90deg, rgba(205, 127, 50, 0.15) 0%, transparent 100%);
-    border-left: 3px solid #CD7F32;
-}
-
-.position-badge {
-    display: inline-block;
-    width: 28px;
-    height: 28px;
-    line-height: 28px;
-    text-align: center;
-    border-radius: 50%;
-    font-weight: var(--font-weight-black);
-    background: rgba(255, 215, 0, 0.2);
-    color: var(--newyear-gold);
-    font-size: 0.75rem;
-}
-
-.position-badge.top-1 {
-    background: var(--newyear-gold);
-    color: var(--deep-blue);
-}
-
-.position-badge.top-2 {
-    background: var(--newyear-silver);
-    color: var(--deep-blue);
-}
-
-.position-badge.top-3 {
-    background: #CD7F32;
-    color: var(--text-primary);
-}
-
-/* Achievements Section */
-.achievements {
-    background: rgba(26, 43, 74, 0.3);
-}
-
-.achievements-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-}
-
-.achievement-card {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 215, 0, 0.2);
-    border-radius: var(--border-radius);
-    padding: 2rem;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: visible;
-}
-
-.achievement-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.1), transparent);
-    transition: left 0.5s ease;
-}
-
-.achievement-card:hover::before {
-    left: 100%;
-}
-
-.achievement-card:hover {
-    transform: translateY(-5px);
-    border-color: var(--newyear-gold);
-    box-shadow: 
-        0 0 20px rgba(255, 215, 0, 0.3),
-        0 0 40px rgba(255, 215, 0, 0.2),
-        0 10px 30px rgba(0, 0, 0, 0.3);
-}
-
-.achievement-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-}
-
-.achievement-points {
-    font-size: 2rem;
-    font-weight: var(--font-weight-black);
-    color: var(--newyear-gold);
-    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-}
-
-.achievement-name {
-    font-size: 1.3rem;
-    font-weight: var(--font-weight-regular);
-    color: var(--text-primary);
-    margin-bottom: 0.5rem;
-}
-
-.achievement-description {
-    font-size: 0.95rem;
-    color: var(--text-secondary);
-    line-height: 1.6;
-}
-
-/* Teams Section */
-.teams {
-    background: rgba(10, 26, 47, 0.5);
-}
-
-.team-search-wrapper {
-    position: relative;
-    margin-bottom: 2rem;
-}
-
-.team-search-input {
-    width: 100%;
-    padding: 15px 50px 15px 20px;
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 215, 0, 0.2);
-    border-radius: var(--border-radius);
-    color: var(--text-primary);
-    font-family: var(--font-primary);
-    font-size: 1rem;
-    transition: all 0.3s ease;
-}
-
-.team-search-input:focus {
-    outline: none;
-    border-color: var(--newyear-gold);
-    box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
-    background: rgba(255, 255, 255, 0.08);
-}
-
-.team-search-input::placeholder {
-    color: var(--text-muted);
-}
-
-.search-icon {
-    position: absolute;
-    right: 20px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 1.2rem;
-    pointer-events: none;
-    opacity: 0.6;
-}
-
-.team-item.hidden {
-    display: none;
-}
-
-.teams-accordion {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.team-item {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 215, 0, 0.2);
-    border-radius: var(--border-radius);
-    overflow: visible;
-    transition: all 0.3s ease;
-    position: relative;
-}
-
-.team-item:hover {
-    transform: translateY(-3px);
-    border-color: var(--newyear-gold);
-    box-shadow: 
-        0 0 20px rgba(255, 215, 0, 0.3),
-        0 0 40px rgba(255, 215, 0, 0.2),
-        0 10px 30px rgba(0, 0, 0, 0.3);
-}
-
-.team-header {
-    padding: 1.5rem;
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    transition: all 0.3s ease;
-}
-
-.team-header:hover {
-    background: rgba(255, 215, 0, 0.05);
-}
-
-.team-info {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-.team-name {
-    font-size: 1.3rem;
-    font-weight: var(--font-weight-regular);
-    color: var(--newyear-gold);
-}
-
-.team-captain {
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-}
-
-.team-stats {
-    display: flex;
-    gap: 2rem;
-    align-items: center;
-}
-
-.team-stat {
-    text-align: center;
-}
-
-.team-stat-label {
-    font-size: 0.8rem;
-    color: var(--text-muted);
-    text-transform: uppercase;
-}
-
-.team-stat-value {
-    font-size: 1.2rem;
-    font-weight: var(--font-weight-regular);
-    color: var(--text-primary);
-}
-
-.team-toggle {
-    font-size: 1.5rem;
-    color: var(--newyear-gold);
-    transition: transform 0.3s ease;
-}
-
-.team-item.active .team-toggle {
-    transform: rotate(180deg);
-}
-
-.team-members {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease;
-}
-
-.team-item.active .team-members {
-    max-height: 2000px;
-}
-
-.members-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.members-table th {
-    padding: 1rem;
-    text-align: left;
-    color: var(--newyear-gold);
-    font-weight: var(--font-weight-regular);
-    text-transform: uppercase;
-    font-size: 0.85rem;
-    background: rgba(255, 215, 0, 0.1);
-}
-
-.members-table td {
-    padding: 1rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    color: var(--text-primary);
-    font-size: 0.9rem;
-}
-
-.member-captain {
-    color: var(--newyear-gold);
-    font-weight: var(--font-weight-regular);
-}
-
-/* Challenges Section */
-.challenges {
-    background: rgba(26, 43, 74, 0.3);
-}
-
-.challenges-list {
-    margin-bottom: 2rem;
-}
-
-.empty-state {
-    text-align: center;
-    color: var(--text-muted);
-    font-style: italic;
-    padding: 2rem;
-}
-
-.challenge-item {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 215, 0, 0.2);
-    border-radius: var(--border-radius);
-    padding: 1.5rem;
-    margin-bottom: 1rem;
-    transition: all 0.3s ease;
-    position: relative;
-}
-
-.challenge-item:hover {
-    transform: translateY(-3px);
-    border-color: var(--newyear-gold);
-    box-shadow: 
-        0 0 20px rgba(255, 215, 0, 0.3),
-        0 0 40px rgba(255, 215, 0, 0.2),
-        0 10px 30px rgba(0, 0, 0, 0.3);
-}
-
-.challenge-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.5rem;
-}
-
-.challenge-teams {
-    font-weight: var(--font-weight-regular);
-    color: var(--newyear-gold);
-}
-
-.challenge-status {
-    padding: 0.3rem 0.8rem;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    text-transform: uppercase;
-}
-
-.challenge-status.pending {
-    background: rgba(255, 215, 0, 0.2);
-    color: var(--newyear-gold);
-}
-
-.challenge-description {
-    color: var(--text-secondary);
-    margin-top: 0.5rem;
-}
-
-/* Photos Section */
-.photos {
-    background: rgba(10, 26, 47, 0.5);
-}
-
-.photos-gallery {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 2rem;
-}
-
-.photo-item {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 215, 0, 0.2);
-    border-radius: var(--border-radius);
-    overflow: hidden;
-    transition: all 0.3s ease;
-}
-
-.photo-item:hover {
-    transform: translateY(-5px);
-    border-color: var(--newyear-gold);
-    box-shadow: 0 10px 30px rgba(255, 215, 0, 0.2);
-}
-
-.photo-image {
-    cursor: pointer;
-    transition: transform 0.3s ease;
-}
-
-.photo-image:hover {
-    transform: scale(1.05);
-}
-
-.photo-image {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-}
-
-.photo-info {
-    padding: 1rem;
-}
-
-.photo-team {
-    font-weight: var(--font-weight-regular);
-    color: var(--newyear-gold);
-    margin-bottom: 0.5rem;
-}
-
-.photo-description {
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-}
-
-/* Декоративные элементы */
-.decorations {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 0;
-    overflow: hidden;
-}
-
-.decoration-star {
-    position: absolute;
-    font-size: 2rem;
-    opacity: 0.6;
-    animation: twinkle 3s ease-in-out infinite;
-    filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));
-}
-
-.decoration-star-1 {
-    top: 10%;
-    left: 5%;
-    animation-delay: 0s;
-}
-
-.decoration-star-2 {
-    top: 20%;
-    right: 10%;
-    animation-delay: 0.5s;
-    font-size: 1.5rem;
-}
-
-.decoration-star-3 {
-    top: 50%;
-    left: 8%;
-    animation-delay: 1s;
-    font-size: 2.5rem;
-}
-
-.decoration-star-4 {
-    top: 70%;
-    right: 15%;
-    animation-delay: 1.5s;
-}
-
-.decoration-star-5 {
-    top: 30%;
-    left: 50%;
-    animation-delay: 2s;
-    font-size: 1.8rem;
-}
-
-.decoration-star-6 {
-    top: 80%;
-    left: 30%;
-    animation-delay: 2.5s;
-    font-size: 2.2rem;
-}
-
-@keyframes twinkle {
-    0%, 100% {
-        opacity: 0.3;
-        transform: scale(1) rotate(0deg);
-    }
-    50% {
-        opacity: 0.8;
-        transform: scale(1.2) rotate(180deg);
+// Открытие модального окна с фото
+function openPhotoModal(imageUrl, teamName, description) {
+    const modal = document.getElementById('photoModal');
+    const modalImg = document.getElementById('modalPhotoImage');
+    const modalTeam = document.getElementById('modalPhotoTeam');
+    const modalDesc = document.getElementById('modalPhotoDescription');
+    
+    if (modal && modalImg) {
+        modalImg.src = imageUrl;
+        if (modalTeam) modalTeam.textContent = teamName;
+        if (modalDesc) modalDesc.textContent = description || '';
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
     }
 }
 
-.decoration-glow {
-    position: absolute;
-    width: 300px;
-    height: 300px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(255, 215, 0, 0.1) 0%, transparent 70%);
-    animation: pulseGlow 4s ease-in-out infinite;
-    filter: blur(40px);
-}
-
-.decoration-glow-1 {
-    top: 10%;
-    left: 10%;
-    animation-delay: 0s;
-}
-
-.decoration-glow-2 {
-    bottom: 20%;
-    right: 15%;
-    animation-delay: 2s;
-    background: radial-gradient(circle, rgba(0, 255, 136, 0.1) 0%, transparent 70%);
-}
-
-.decoration-glow-3 {
-    top: 60%;
-    left: 50%;
-    animation-delay: 4s;
-    background: radial-gradient(circle, rgba(170, 0, 255, 0.1) 0%, transparent 70%);
-}
-
-@keyframes pulseGlow {
-    0%, 100% {
-        opacity: 0.3;
-        transform: scale(1);
-    }
-    50% {
-        opacity: 0.6;
-        transform: scale(1.2);
+// Закрытие модального окна
+function closePhotoModal() {
+    const modal = document.getElementById('photoModal');
+    if (modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
     }
 }
 
-.decoration-particles {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background-image: 
-        radial-gradient(2px 2px at 20% 30%, rgba(255, 215, 0, 0.3), transparent),
-        radial-gradient(2px 2px at 60% 70%, rgba(0, 255, 136, 0.2), transparent),
-        radial-gradient(1px 1px at 50% 50%, rgba(255, 255, 255, 0.4), transparent),
-        radial-gradient(1px 1px at 80% 10%, rgba(255, 215, 0, 0.3), transparent),
-        radial-gradient(2px 2px at 90% 60%, rgba(170, 0, 255, 0.2), transparent);
-    background-size: 200% 200%;
-    animation: particleMove 20s linear infinite;
-    opacity: 0.5;
-}
-
-@keyframes particleMove {
-    0% {
-        background-position: 0% 0%;
+// Закрытие модального окна по Escape
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        closePhotoModal();
     }
-    100% {
-        background-position: 100% 100%;
+});
+
+// Обновление футера
+function updateFooter() {
+    if (!gameData) return;
+    
+    const totalRevenueEl = document.getElementById('totalRevenue');
+    if (totalRevenueEl) {
+        totalRevenueEl.textContent = formatCurrency(gameData.totalRevenue || 0);
     }
 }
 
-/* Hero декоративные элементы */
-.hero-decoration-elements {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 1;
-}
-
-.hero-star {
-    position: absolute;
-    font-size: 3rem;
-    opacity: 0.7;
-    animation: floatStar 6s ease-in-out infinite;
-    filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.6));
-}
-
-.hero-star-1 {
-    top: 15%;
-    left: 10%;
-    animation-delay: 0s;
-}
-
-.hero-star-2 {
-    top: 25%;
-    right: 15%;
-    animation-delay: 1.5s;
-    font-size: 4rem;
-}
-
-.hero-star-3 {
-    bottom: 30%;
-    left: 20%;
-    animation-delay: 3s;
-    font-size: 2.5rem;
-}
-
-.hero-star-4 {
-    bottom: 20%;
-    right: 25%;
-    animation-delay: 4.5s;
-}
-
-@keyframes floatStar {
-    0%, 100% {
-        transform: translateY(0) rotate(0deg);
-        opacity: 0.5;
-    }
-    50% {
-        transform: translateY(-30px) rotate(180deg);
-        opacity: 0.9;
+// Обновление даты последнего обновления
+function updateLastUpdated() {
+    if (!gameData) return;
+    
+    const dateEl = document.getElementById('lastUpdated');
+    if (dateEl && gameData.lastUpdated) {
+        const date = new Date(gameData.lastUpdated);
+        dateEl.textContent = date.toLocaleDateString('ru-RU', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        });
     }
 }
 
-/* Дополнительные украшения для секций */
-.section-title::before,
-.section-title::after {
-    content: '✨';
-    display: inline-block;
-    margin: 0 1rem;
-    font-size: 1.5rem;
-    animation: rotateStar 3s linear infinite;
-    opacity: 0.7;
-    filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));
-}
-
-@keyframes rotateStar {
-    from {
-        transform: rotate(0deg) scale(1);
+// Таймер до следующего обновления
+function startUpdateTimer() {
+    if (!gameData || !gameData.nextUpdate) return;
+    
+    const timerEl = document.getElementById('nextUpdateTimer');
+    if (!timerEl) return;
+    
+    function updateTimer() {
+        const now = new Date();
+        const nextUpdate = new Date(gameData.nextUpdate);
+        const diff = nextUpdate - now;
+        
+        if (diff <= 0) {
+            timerEl.textContent = 'Обновление ожидается';
+            return;
+        }
+        
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        
+        let timerText = '';
+        if (days > 0) timerText += `${days} дн. `;
+        if (hours > 0) timerText += `${hours} ч. `;
+        timerText += `${minutes} мин.`;
+        
+        timerEl.textContent = timerText;
     }
-    50% {
-        transform: rotate(180deg) scale(1.2);
+    
+    updateTimer();
+    setInterval(updateTimer, 60000); // Обновление каждую минуту
+}
+
+// Форматирование валюты
+function formatCurrency(amount) {
+    return new Intl.NumberFormat('ru-RU', {
+        style: 'currency',
+        currency: 'RUB',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+    }).format(amount);
+}
+
+// Настройка обработчиков событий
+function setupEventListeners() {
+    // Мобильное меню
+    const navToggle = document.querySelector('.nav-toggle');
+    const navMenu = document.querySelector('.nav-menu');
+    
+    if (navToggle && navMenu) {
+        navToggle.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+            navToggle.classList.toggle('active');
+        });
     }
-    to {
-        transform: rotate(360deg) scale(1);
+    
+    // Сортировка таблицы
+    document.querySelectorAll('.btn-sort').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            document.querySelectorAll('.btn-sort').forEach(b => b.classList.remove('active'));
+            e.target.classList.add('active');
+            currentSort = e.target.dataset.sort;
+            calculatePoints();
+            renderLeaderboard();
+        });
+    });
+    
+    // Кнопка обновления
+    const refreshBtn = document.getElementById('refreshBtn');
+    if (refreshBtn) {
+        refreshBtn.addEventListener('click', () => {
+            location.reload();
+        });
     }
-}
-
-/* Дополнительные частицы для секций */
-.leaderboard-section::after,
-.achievements::after,
-.teams::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 200px;
-    height: 200px;
-    background: radial-gradient(circle, rgba(255, 215, 0, 0.1) 0%, transparent 70%);
-    border-radius: 50%;
-    filter: blur(30px);
-    animation: floatGlow 6s ease-in-out infinite;
-    pointer-events: none;
-    z-index: 0;
-}
-
-@keyframes floatGlow {
-    0%, 100% {
-        transform: translate(0, 0) scale(1);
-        opacity: 0.3;
-    }
-    50% {
-        transform: translate(-20px, -20px) scale(1.2);
-        opacity: 0.6;
-    }
-}
-
-/* Украшения для карточек достижений */
-.achievement-card::after {
-    content: '⭐';
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    font-size: 1.5rem;
-    opacity: 0.3;
-    animation: twinkle 2s ease-in-out infinite;
-    filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.5));
-    z-index: 1;
-}
-
-.achievement-card:hover::after {
-    opacity: 0.8;
-    transform: scale(1.3) rotate(15deg);
-}
-
-/* Украшения для топ-3 в таблице - убраны медали, используем только цветовое выделение */
-
-/* Новогодние украшения */
-.legend-card::before {
-    content: '🎄';
-    position: absolute;
-    top: -15px;
-    right: -15px;
-    font-size: 2rem;
-    opacity: 0.4;
-    animation: rotateStar 4s linear infinite;
-    filter: drop-shadow(0 0 10px rgba(34, 139, 34, 0.5));
-    z-index: 1;
-}
-
-.legend-card:hover::before {
-    opacity: 0.7;
-    transform: scale(1.2);
-}
-
-.team-item::before {
-    content: '🎁';
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    font-size: 1.2rem;
-    opacity: 0.3;
-    transition: all 0.3s ease;
-    filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.4));
-    z-index: 1;
-}
-
-.team-item:hover::before {
-    opacity: 0.7;
-    transform: scale(1.2) rotate(15deg);
-}
-
-/* Дополнительные украшения для фото */
-.photo-item::before {
-    content: '📸';
-    position: absolute;
-    top: 0.5rem;
-    right: 0.5rem;
-    font-size: 1.5rem;
-    opacity: 0.5;
-    z-index: 1;
-    transition: all 0.3s ease;
-}
-
-.photo-item:hover::before {
-    opacity: 0.9;
-    transform: scale(1.3) rotate(-10deg);
-}
-
-/* Украшения для челленджей */
-.challenge-item::before {
-    content: '⚔️';
-    position: absolute;
-    top: 0.5rem;
-    left: 0.5rem;
-    font-size: 1.5rem;
-    opacity: 0.4;
-    z-index: 1;
-}
-
-/* Блестящие эффекты для кнопок */
-.btn-primary::before {
-    content: '✨';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(0);
-    font-size: 1.5rem;
-    opacity: 0;
-    transition: all 0.3s ease;
-    pointer-events: none;
-}
-
-.btn-primary:hover::before {
-    transform: translate(-50%, -50%) scale(1.5);
-    opacity: 0.8;
-    animation: sparkle 0.6s ease-out;
-}
-
-@keyframes sparkle {
-    0% {
-        transform: translate(-50%, -50%) scale(0) rotate(0deg);
-        opacity: 0;
-    }
-    50% {
-        opacity: 1;
-    }
-    100% {
-        transform: translate(-50%, -50%) scale(2) rotate(360deg);
-        opacity: 0;
+    
+    // Поиск по командам
+    const teamSearchInput = document.getElementById('teamSearch');
+    if (teamSearchInput) {
+        teamSearchInput.addEventListener('input', (e) => {
+            filterTeams(e.target.value);
+        });
+        
+        // Очистка поиска при Escape
+        teamSearchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                e.target.value = '';
+                filterTeams('');
+            }
+        });
     }
 }
 
-/* Эффект свечения для карточек при наведении */
-.achievement-card,
-.team-item,
-.challenge-item,
-.photo-item {
-    position: relative;
-    transition: all 0.3s ease;
-}
 
-.achievement-card:hover,
-.team-item:hover,
-.challenge-item:hover,
-.photo-item:hover {
-    box-shadow: 
-        0 0 20px rgba(255, 215, 0, 0.3),
-        0 0 40px rgba(255, 215, 0, 0.2),
-        0 10px 30px rgba(0, 0, 0, 0.3);
-    border-color: var(--newyear-gold);
-}
 
-/* Buttons */
-.btn-primary {
-    padding: 12px 30px;
-    background: var(--newyear-gold);
-    color: var(--deep-blue);
-    border: 2px solid var(--newyear-gold);
-    border-radius: var(--border-radius);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-family: var(--font-primary);
-    font-size: 1rem;
-    font-weight: var(--font-weight-regular);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
-}
-
-.btn-primary:hover {
-    background: transparent;
-    color: var(--newyear-gold);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
-}
-
-/* Modal */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 2000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(5px);
-    animation: fadeIn 0.3s ease;
-}
-
-.modal.active {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-.modal-content {
-    background: linear-gradient(135deg, var(--deep-blue) 0%, var(--ice-blue) 100%);
-    border: 2px solid var(--newyear-gold);
-    border-radius: var(--border-radius-lg);
-    padding: 2rem;
-    max-width: 500px;
-    width: 90%;
-    max-height: 90vh;
-    overflow-y: auto;
-    position: relative;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-}
-
-.modal-content h3 {
-    color: var(--newyear-gold);
-    margin-bottom: 1.5rem;
-    font-size: 1.5rem;
-    text-transform: uppercase;
-}
-
-.modal-close {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    font-size: 2rem;
-    color: var(--text-primary);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    line-height: 1;
-}
-
-.modal-close:hover {
-    color: var(--newyear-gold);
-    transform: rotate(90deg);
-}
-
-/* Photo Modal Styles */
-.photo-modal-content {
-    max-width: 90vw;
-    max-height: 90vh;
-    width: auto;
-    padding: 0;
-    background: transparent;
-    border: none;
-    box-shadow: none;
-}
-
-.modal-photo-image {
-    max-width: 100%;
-    max-height: 80vh;
-    width: auto;
-    height: auto;
-    object-fit: contain;
-    border-radius: var(--border-radius);
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-}
-
-.modal-photo-info {
-    margin-top: 1.5rem;
-    text-align: center;
-    padding: 0 2rem 2rem;
-}
-
-.modal-photo-team {
-    font-size: 1.5rem;
-    font-weight: var(--font-weight-regular);
-    color: var(--newyear-gold);
-    margin-bottom: 0.5rem;
-    text-transform: uppercase;
-}
-
-.modal-photo-description {
-    font-size: 1rem;
-    color: var(--text-secondary);
-}
-
-.form-group {
-    margin-bottom: 1.5rem;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 0.5rem;
-    color: var(--text-primary);
-    font-weight: var(--font-weight-regular);
-    text-transform: uppercase;
-    font-size: 0.9rem;
-}
-
-.form-group input,
-.form-group select,
-.form-group textarea {
-    width: 100%;
-    padding: 0.8rem;
-    background: rgba(10, 26, 47, 0.9);
-    border: 1px solid rgba(255, 215, 0, 0.3);
-    border-radius: var(--border-radius);
-    color: var(--text-primary);
-    font-family: var(--font-primary);
-    font-size: 1rem;
-    transition: all 0.3s ease;
-}
-
-.form-group select {
-    background-color: rgba(10, 26, 47, 0.95);
-    color: var(--text-primary);
-    cursor: pointer;
-}
-
-.form-group select option {
-    background-color: var(--deep-blue);
-    color: var(--text-primary);
-    padding: 0.5rem;
-}
-
-.form-group select:focus option {
-    background-color: var(--ice-blue);
-    color: var(--newyear-gold);
-}
-
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
-    outline: none;
-    border-color: var(--newyear-gold);
-    background: rgba(10, 26, 47, 0.95);
-    box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
-}
-
-/* Results Section */
-.results {
-    background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(10, 26, 47, 0.8) 50%, rgba(255, 215, 0, 0.1) 100%);
-    position: relative;
-    overflow: hidden;
-}
-
-.results::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(circle at 50% 50%, rgba(255, 215, 0, 0.15) 0%, transparent 70%);
-    animation: pulseGlow 4s ease-in-out infinite;
-    pointer-events: none;
-}
-
-.results-content {
-    position: relative;
-    z-index: 1;
-}
-
-.winner-section {
-    text-align: center;
-    margin-bottom: 4rem;
-    position: relative;
-}
-
-.winner-crown {
-    font-size: 5rem;
-    animation: floatCrown 3s ease-in-out infinite;
-    filter: drop-shadow(0 0 30px rgba(255, 215, 0, 0.8));
-    margin-bottom: 1rem;
-}
-
-@keyframes floatCrown {
-    0%, 100% {
-        transform: translateY(0) rotate(-5deg);
+// Рендеринг итогов соревнования
+function renderResults() {
+    if (!gameData || !gameData.teams) return;
+    
+    // Сортируем команды по баллам, при равенстве - по выручке
+    const sortedTeams = [...gameData.teams].sort((a, b) => {
+        if (b.points !== a.points) {
+            return b.points - a.points;
+        }
+        return b.totalRevenue - a.totalRevenue;
+    });
+    
+    // Определяем места с учетом одинаковых баллов
+    const teamsWithPlaces = [];
+    let currentPlace = 1;
+    let currentPoints = sortedTeams[0]?.points;
+    
+    sortedTeams.forEach((team, index) => {
+        if (team.points !== currentPoints) {
+            currentPlace = index + 1;
+            currentPoints = team.points;
+        }
+        teamsWithPlaces.push({
+            ...team,
+            place: currentPlace,
+            points: team.points
+        });
+    });
+    
+    // Победитель (1 место)
+    const winner = teamsWithPlaces.find(t => t.place === 1);
+    if (winner) {
+        const winnerNameEl = document.getElementById('winnerName');
+        const winnerCaptainEl = document.getElementById('winnerCaptain');
+        const winnerPointsEl = document.getElementById('winnerPoints');
+        const winnerRevenueEl = document.getElementById('winnerRevenue');
+        
+        if (winnerNameEl) winnerNameEl.textContent = winner.name;
+        if (winnerCaptainEl) winnerCaptainEl.textContent = `Капитан: ${winner.captain}`;
+        if (winnerPointsEl) winnerPointsEl.textContent = winner.points;
+        if (winnerRevenueEl) winnerRevenueEl.textContent = formatCurrency(winner.totalRevenue);
     }
-    50% {
-        transform: translateY(-20px) rotate(5deg);
+    
+    // Пьедестал (топ-3 места)
+    const podiumEl = document.getElementById('podium');
+    if (podiumEl) {
+        podiumEl.innerHTML = '';
+        
+        // Получаем команды для пьедестала (1, 2, 3 места)
+        const firstPlace = teamsWithPlaces.filter(t => t.place === 1);
+        const secondPlace = teamsWithPlaces.filter(t => t.place === 2);
+        const thirdPlace = teamsWithPlaces.filter(t => t.place === 3);
+        
+        const podiumData = [];
+        
+        // Если есть 2 место, добавляем его слева
+        if (secondPlace.length > 0) {
+            secondPlace.forEach((team, index) => {
+                podiumData.push({
+                    team: team,
+                    place: 'second',
+                    label: '2'
+                });
+            });
+        }
+        
+        // 1 место в центре
+        if (firstPlace.length > 0) {
+            firstPlace.forEach((team, index) => {
+                podiumData.push({
+                    team: team,
+                    place: 'first',
+                    label: '1'
+                });
+            });
+        }
+        
+        // 3 место справа
+        if (thirdPlace.length > 0) {
+            thirdPlace.forEach((team, index) => {
+                podiumData.push({
+                    team: team,
+                    place: 'third',
+                    label: '3'
+                });
+            });
+        }
+        
+        // Если есть несколько команд на 2 месте, показываем их рядом
+        // Порядок: 2 место(и) слева, 1 место в центре, 3 место справа
+        const reorderedPodium = [];
+        
+        // Добавляем все 2 места
+        secondPlace.forEach(team => {
+            reorderedPodium.push({ team, place: 'second', label: '2' });
+        });
+        
+        // Добавляем 1 место
+        firstPlace.forEach(team => {
+            reorderedPodium.push({ team, place: 'first', label: '1' });
+        });
+        
+        // Добавляем 3 место
+        thirdPlace.forEach(team => {
+            reorderedPodium.push({ team, place: 'third', label: '3' });
+        });
+        
+        reorderedPodium.forEach(({ team, place, label }) => {
+            if (!team) return;
+            
+            const item = document.createElement('div');
+            item.className = 'podium-item';
+            item.innerHTML = `
+                <div class="podium-place ${place}">${label}</div>
+                <div class="podium-card ${place}">
+                    <div class="podium-team-name">${team.name}</div>
+                    <div class="podium-captain">${team.captain}</div>
+                    <div class="podium-stats">
+                        <div class="podium-stat">
+                            <span class="podium-stat-label">Баллы:</span>
+                            <span class="podium-stat-value">${team.points}</span>
+                        </div>
+                        <div class="podium-stat">
+                            <span class="podium-stat-label">Выручка:</span>
+                            <span class="podium-stat-value">${formatCurrency(team.totalRevenue)}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            podiumEl.appendChild(item);
+        });
+    }
+    
+    // Общая статистика
+    const statsGridEl = document.getElementById('statsGrid');
+    if (statsGridEl) {
+        const totalTeams = gameData.teams.length;
+        const totalMembers = gameData.teams.reduce((sum, team) => sum + team.members.length, 0);
+        const totalPoints = gameData.teams.reduce((sum, team) => sum + team.points, 0);
+        const avgRevenue = Math.round(gameData.totalRevenue / totalTeams);
+        const avgPoints = Math.round(totalPoints / totalTeams);
+        
+        statsGridEl.innerHTML = `
+            <div class="stat-card">
+                <div class="stat-card-icon">👥</div>
+                <div class="stat-card-label">Команд</div>
+                <div class="stat-card-value">${totalTeams}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-icon">🎯</div>
+                <div class="stat-card-label">Участников</div>
+                <div class="stat-card-value">${totalMembers}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-icon">💰</div>
+                <div class="stat-card-label">Общая выручка</div>
+                <div class="stat-card-value">${formatCurrency(gameData.totalRevenue)}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-icon">⭐</div>
+                <div class="stat-card-label">Всего баллов</div>
+                <div class="stat-card-value">${totalPoints}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-icon">📊</div>
+                <div class="stat-card-label">Средняя выручка</div>
+                <div class="stat-card-value">${formatCurrency(avgRevenue)}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-icon">🏅</div>
+                <div class="stat-card-label">Средние баллы</div>
+                <div class="stat-card-value">${avgPoints}</div>
+            </div>
+        `;
+    }
+    
+    // Создание конфетти
+    createConfetti();
+}
+
+// Создание конфетти
+function createConfetti() {
+    const container = document.getElementById('confettiContainer');
+    if (!container) return;
+    
+    // Очищаем предыдущее конфетти
+    container.innerHTML = '';
+    
+    // Создаем 50 конфетти
+    for (let i = 0; i < 50; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = Math.random() * 100 + '%';
+        confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+        confetti.style.animationDelay = Math.random() * 2 + 's';
+        confetti.style.width = (Math.random() * 10 + 5) + 'px';
+        confetti.style.height = (Math.random() * 10 + 5) + 'px';
+        confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+        container.appendChild(confetti);
     }
 }
 
-.winner-title {
-    font-size: 2.5rem;
-    color: var(--newyear-gold);
-    margin-bottom: 2rem;
-    text-transform: uppercase;
-    letter-spacing: 3px;
-    text-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
-    animation: glow 2s ease-in-out infinite alternate;
-}
-
-.winner-card {
-    background: linear-gradient(135deg, rgba(255, 215, 0, 0.2) 0%, rgba(255, 215, 0, 0.05) 100%);
-    backdrop-filter: blur(20px);
-    border: 3px solid var(--newyear-gold);
-    border-radius: var(--border-radius-lg);
-    padding: 3rem 2rem;
-    max-width: 600px;
-    margin: 0 auto;
-    box-shadow: 
-        0 0 50px rgba(255, 215, 0, 0.4),
-        0 0 100px rgba(255, 215, 0, 0.2),
-        inset 0 0 50px rgba(255, 215, 0, 0.1);
-    animation: winnerPulse 3s ease-in-out infinite;
-    position: relative;
-    overflow: hidden;
-}
-
-.winner-card::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: linear-gradient(45deg, transparent, rgba(255, 215, 0, 0.1), transparent);
-    animation: shimmer 3s linear infinite;
-}
-
-@keyframes shimmer {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
-}
-
-@keyframes winnerPulse {
-    0%, 100% {
-        box-shadow: 
-            0 0 50px rgba(255, 215, 0, 0.4),
-            0 0 100px rgba(255, 215, 0, 0.2),
-            inset 0 0 50px rgba(255, 215, 0, 0.1);
-    }
-    50% {
-        box-shadow: 
-            0 0 80px rgba(255, 215, 0, 0.6),
-            0 0 150px rgba(255, 215, 0, 0.4),
-            inset 0 0 80px rgba(255, 215, 0, 0.2);
-    }
-}
-
-.winner-name {
-    font-size: 2.5rem;
-    font-weight: var(--font-weight-black);
-    color: var(--newyear-gold);
-    margin-bottom: 1rem;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
-}
-
-.winner-captain {
-    font-size: 1.2rem;
-    color: var(--text-secondary);
-    margin-bottom: 2rem;
-}
-
-.winner-stats {
-    display: flex;
-    justify-content: center;
-    gap: 3rem;
-    flex-wrap: wrap;
-}
-
-.winner-stat {
-    text-align: center;
-}
-
-.winner-stat-label {
-    display: block;
-    font-size: 0.9rem;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    margin-bottom: 0.5rem;
-}
-
-.winner-stat-value {
-    display: block;
-    font-size: 2rem;
-    font-weight: var(--font-weight-black);
-    color: var(--newyear-gold);
-    text-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
-}
-
-.podium-section {
-    margin-bottom: 4rem;
-}
-
-.podium-title {
-    font-size: 2rem;
-    color: var(--newyear-gold);
-    text-align: center;
-    margin-bottom: 2rem;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-}
-
-.podium {
-    display: flex;
-    justify-content: center;
-    align-items: flex-end;
-    gap: 1.5rem;
-    max-width: 1200px;
-    margin: 0 auto;
-    flex-wrap: wrap;
-    padding-top: 2rem;
-}
-
-.podium-item {
-    flex: 0 1 auto;
-    min-width: 200px;
-    max-width: 280px;
-    text-align: center;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.podium-place {
-    font-size: 3rem;
-    font-weight: var(--font-weight-black);
-    margin-bottom: 1rem;
-    text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
-}
-
-.podium-place.first {
-    color: var(--newyear-gold);
-    font-size: 4rem;
-}
-
-.podium-place.second {
-    color: var(--newyear-silver);
-    font-size: 3.5rem;
-}
-
-.podium-place.third {
-    color: #CD7F32;
-    font-size: 3rem;
-}
-
-.podium-card {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    border: 2px solid rgba(255, 215, 0, 0.3);
-    border-radius: var(--border-radius);
-    padding: 2rem 1.5rem;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-}
-
-.podium-card.first {
-    border-color: var(--newyear-gold);
-    box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
-    min-height: 280px;
-    margin-top: -30px; /* Поднимаем выше для эффекта пьедестала */
-}
-
-.podium-card.second {
-    border-color: var(--newyear-silver);
-    box-shadow: 0 0 25px rgba(192, 192, 192, 0.3);
-    min-height: 220px;
-    margin-top: 0;
-}
-
-.podium-card.third {
-    border-color: #CD7F32;
-    box-shadow: 0 0 20px rgba(205, 127, 50, 0.3);
-    min-height: 200px;
-    margin-top: 20px; /* Опускаем ниже для эффекта пьедестала */
-}
-
-.podium-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 10px 40px rgba(255, 215, 0, 0.4);
-}
-
-.podium-team-name {
-    font-size: 1.3rem;
-    font-weight: var(--font-weight-regular);
-    color: var(--newyear-gold);
-    margin-bottom: 0.5rem;
-}
-
-.podium-captain {
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-    margin-bottom: 1rem;
-}
-
-.podium-stats {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.podium-stat {
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.9rem;
-}
-
-.podium-stat-label {
-    color: var(--text-muted);
-}
-
-.podium-stat-value {
-    color: var(--text-primary);
-    font-weight: var(--font-weight-regular);
-}
-
-.stats-section {
-    margin-bottom: 4rem;
-}
-
-.stats-title {
-    font-size: 2rem;
-    color: var(--newyear-gold);
-    text-align: center;
-    margin-bottom: 2rem;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-}
-
-.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 2rem;
-    max-width: 1000px;
-    margin: 0 auto;
-}
-
-.stat-card {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 215, 0, 0.2);
-    border-radius: var(--border-radius);
-    padding: 2rem;
-    text-align: center;
-    transition: all 0.3s ease;
-    position: relative;
-}
-
-.stat-card:hover {
-    transform: translateY(-5px);
-    border-color: var(--newyear-gold);
-    box-shadow: 0 10px 30px rgba(255, 215, 0, 0.2);
-}
-
-.stat-card-icon {
-    font-size: 3rem;
-    margin-bottom: 1rem;
-    filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));
-}
-
-.stat-card-label {
-    font-size: 0.9rem;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    margin-bottom: 0.5rem;
-}
-
-.stat-card-value {
-    font-size: 2rem;
-    font-weight: var(--font-weight-black);
-    color: var(--newyear-gold);
-    text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
-}
-
-.congratulations-section {
-    text-align: center;
-    padding: 3rem 2rem;
-    background: rgba(255, 255, 255, 0.03);
-    backdrop-filter: blur(10px);
-    border-radius: var(--border-radius-lg);
-    border: 2px solid rgba(255, 215, 0, 0.2);
-    position: relative;
-    overflow: hidden;
-}
-
-.congratulations-content {
-    position: relative;
-    z-index: 1;
-}
-
-.congratulations-title {
-    font-size: 2.5rem;
-    color: var(--newyear-gold);
-    margin-bottom: 1.5rem;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
-}
-
-.congratulations-text {
-    font-size: 1.2rem;
-    color: var(--text-secondary);
-    line-height: 1.8;
-    max-width: 800px;
-    margin: 0 auto;
-}
-
-.confetti-container {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 0;
-    overflow: hidden;
-}
-
-.confetti {
-    position: absolute;
-    width: 10px;
-    height: 10px;
-    background: var(--newyear-gold);
-    animation: confettiFall linear infinite;
-}
-
-.confetti:nth-child(2n) {
-    background: var(--newyear-red);
-}
-
-.confetti:nth-child(3n) {
-    background: var(--newyear-green);
-}
-
-.confetti:nth-child(4n) {
-    background: var(--glow-blue);
-}
-
-@keyframes confettiFall {
-    0% {
-        transform: translateY(-100vh) rotate(0deg);
-        opacity: 1;
-    }
-    100% {
-        transform: translateY(100vh) rotate(720deg);
-        opacity: 0;
-    }
-}
-
-/* Footer */
-.footer {
-    background: rgba(10, 26, 47, 0.8);
-    border-top: 2px solid rgba(255, 215, 0, 0.2);
-    padding: 3rem 0;
-}
-
-.footer-content {
-    text-align: center;
-}
-
-.footer-stats {
-    display: flex;
-    justify-content: center;
-    gap: 3rem;
-    margin-bottom: 2rem;
-    flex-wrap: wrap;
-}
-
-.stat-item {
-    text-align: center;
-}
-
-.stat-label {
-    display: block;
-    font-size: 0.9rem;
-    color: var(--text-muted);
-    margin-bottom: 0.5rem;
-    text-transform: uppercase;
-}
-
-.stat-value {
-    display: block;
-    font-size: 1.5rem;
-    font-weight: var(--font-weight-black);
-    color: var(--newyear-gold);
-    text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
-}
-
-.footer-links {
-    color: var(--text-muted);
-    font-size: 0.9rem;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .nav-menu {
-        position: fixed;
-        top: 70px;
-        left: -100%;
-        width: 100%;
-        background: rgba(10, 26, 47, 0.98);
-        flex-direction: column;
-        padding: 2rem 0;
-        transition: left 0.3s ease;
-        border-top: 2px solid rgba(255, 215, 0, 0.2);
-    }
-
-    .nav-menu.active {
-        left: 0;
-    }
-
-    .nav-toggle {
-        display: flex;
-    }
-
-    .title-main {
-        font-size: 2.5rem;
-    }
-
-    .title-sub {
-        font-size: 1.5rem;
-    }
-
-    .section-title {
-        font-size: 2rem;
-    }
-
-    .legend-content {
-        grid-template-columns: 1fr;
-    }
-
-    .legend-visual {
-        grid-template-columns: 1fr;
-    }
-
-    .footer-stats {
-        flex-direction: column;
-        gap: 1.5rem;
-    }
-
-    .leaderboard-table {
-        font-size: 0.75rem;
-    }
-
-    .leaderboard-table th {
-        padding: 0.7rem;
-        font-size: 0.7rem;
-    }
-
-    .leaderboard-table td {
-        padding: 0.7rem;
-        font-size: 0.75rem;
-    }
-
-    .position-badge {
-        width: 24px;
-        height: 24px;
-        line-height: 24px;
-        font-size: 0.7rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .title-main {
-        font-size: 2rem;
-    }
-
-    .hero-description {
-        font-size: 1rem;
-    }
-
-    .achievements-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .winner-name {
-        font-size: 1.8rem;
-    }
-
-    .winner-stats {
-        flex-direction: column;
-        gap: 1.5rem;
-    }
-
-    .podium {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .podium-item {
-        width: 100%;
-        max-width: 300px;
-    }
-
-    .stats-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .congratulations-title {
-        font-size: 1.8rem;
-    }
-
-    .congratulations-text {
-        font-size: 1rem;
-    }
-}
+// Экспорт функции для использования в HTML
+window.toggleTeam = toggleTeam;
+window.openPhotoModal = openPhotoModal;
+window.closePhotoModal = closePhotoModal;
 
